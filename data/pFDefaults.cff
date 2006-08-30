@@ -1,0 +1,24 @@
+#Geometry
+include "Geometry/CMSCommonData/data/cmsSimIdealGeometryXML.cfi"
+es_prefer = XMLIdealGeometryESSource {}    
+include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
+
+# include used for track reconstruction
+include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
+
+
+module pf = PFProducer {
+    
+    # true particles 
+    include "FastSimulation/Event/data/NoVertexGenerator.cfi"
+    include "FastSimulation/Event/data/ParticleFilter.cfi"
+    
+    # Tracking algorithms
+    string Fitter      = "KFFittingSmoother"   
+    string Propagator  = "PropagatorWithMaterial" 
+    string TTRHBuilder = "WithTrackAngle"
+    # Input/output collections for tracks
+    untracked string TrackCandidateCollection = "CkfTrackCandidates"
+    untracked string PFRecTrackCollection     = "PFRecTrackCollection"
+    untracked string PFParticleCollection     = "PFParticleCollection"
+}
