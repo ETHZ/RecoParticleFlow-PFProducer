@@ -219,23 +219,23 @@ include "Configuration/Applications/data/reco-application-calorimetry-jetmet-gen
 #  
 # digitization
 # 
-sequence trDigi = { pixdigi & stripdigi }
-sequence calDigi = { ecalDigiSequence & hcaldigi }
-sequence muonDigi = { muoncscdigi & muondtdigi & muonrpcdigi }
+sequence trDigi = { siPixelDigis & siStripDigis }
+sequence calDigi = { ecalDigiSequence & hcalDigis }
+sequence muonDigi = { muonCSCDigis & muonDTDigis & muonRPCDigis }
 # all digitization
 sequence doDigi = { trDigi & calDigi & muonDigi   }
 #
 # local reconstruction
 # 
-sequence trackerlocalreco = { pixClust & pixRecHitConverter & ThreeThresholdClusterizer & LocalMeasurementConverter }
-sequence muonlocalreco = { rpcrechitbuilder & CSCRecHit2DProducer & CSCSegmentProducer & DTRecHit1DProducer & DTSegment2DProducer & DTSegment4DProducer }
+sequence trackerlocalreco = { siPixelClusters & siPixelRecHits & siStripClusters & siStripMatchedRecHits }
+sequence muonlocalreco = { rpcRecHits & csc2DRecHits & cscSegments & dt1DRecHits & dt2DSegments & dt4DSegments }
 sequence calolocalreco = { ecalLocalRecoSequence & hbhereco & hfreco & horeco }
 # all local reconstruction
 sequence localreco = {calolocalreco, trackerlocalreco, muonlocalreco}
 #
 # global reconstruction
 #
-sequence ckftracks = {GlobalPixelSeeds & CkfTrackCandidates & CTFWMaterial} 
+sequence ckftracks = {globalPixelSeeds & ckfTrackCandidates & ctfWithMaterialTracks} 
 sequence electronreconstruction = {islandClusteringSequence}
 sequence caloTowersRec = { towerMaker, caloTowers }
 sequence jetmetrecontruction = {caloTowersRec, caloJetMet, caloJetMetGen}
@@ -243,7 +243,7 @@ sequence jetmetrecontruction = {caloTowersRec, caloJetMet, caloJetMetGen}
 sequence globalreco = {ckftracks,electronreconstruction,jetmetrecontruction}
 #
 #   path p1 = { VtxSmeared, SimG4Object, mix, doDigi }
-path p1 = { SimG4Object, mix, doDigi, localreco, globalreco}
+path p1 = { g4SimHits, mix, doDigi, localreco, globalreco}
 
 endpath outpath = { ALL-RECO }
 		

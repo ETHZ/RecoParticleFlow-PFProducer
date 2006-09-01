@@ -6,19 +6,31 @@ include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 # include used for track reconstruction
 include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
 
+    
 
 module pf = PFProducer {
-    
+
     # true particles 
     include "FastSimulation/Event/data/NoVertexGenerator.cfi"
-    include "FastSimulation/Event/data/ParticleFilter.cfi"
-    
+    PSet ParticleFilter = {
+	# Particles with |eta| > etaMax (momentum direction at primary vertex) 
+	# are not simulated 
+        double etaMax = 5.0
+	# Charged particles with pT < pTMin (GeV/c) are not simulated
+        double pTMin =  0.
+	# Particles with energy smaller than EMin (GeV) are not simulated
+        double EMin = 0.
+    }
+    # replace ParticleFilter.pTMin = 0.5
+
     # Tracking algorithms
     string Fitter      = "KFFittingSmoother"   
     string Propagator  = "PropagatorWithMaterial" 
     string TTRHBuilder = "WithTrackAngle"
-    # Input/output collections for tracks
-    untracked string TrackCandidateCollection = "CkfTrackCandidates"
-    untracked string PFRecTrackCollection     = "PFRecTrackCollection"
-    untracked string PFParticleCollection     = "PFParticleCollection"
+    # module label to find input rec tracks 
+    untracked string RecTrackModuleLabel = "ckfTrackCandidates"
+    # module label to find input sim tracks and sim vertices
+    untracked string SimModuleLabel            = "g4SimHits"
+    untracked string PFRecTrackCollection      = "PFRecTrackCollection"
+    untracked string PFParticleCollection      = "PFParticleCollection"
 }
