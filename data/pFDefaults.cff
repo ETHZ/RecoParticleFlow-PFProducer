@@ -8,7 +8,7 @@ include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
 
     
 
-module pf = PFProducer {
+module particleFlow = PFProducer {
 
     # true particles 
     include "FastSimulation/Event/data/NoVertexGenerator.cfi"
@@ -31,6 +31,7 @@ module pf = PFProducer {
     untracked string RecTrackModuleLabel = "ckfTrackCandidates"
     # module label to find input sim tracks and sim vertices
     untracked string SimModuleLabel            = "g4SimHits"
-    untracked string PFRecTrackCollection      = "PFRecTrackCollection"
-    untracked string PFParticleCollection      = "PFParticleCollection"
+    # this is for output
+    untracked string PFRecTrackCollection      = ""
+    untracked string PFParticleCollection      = ""
 }
