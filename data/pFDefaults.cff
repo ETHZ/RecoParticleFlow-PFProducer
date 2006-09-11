@@ -6,6 +6,8 @@ include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 # include used for track reconstruction
 include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
 
+# The particle data table
+include "SimGeneral/HepPDTESSource/data/pythiapdt.cfi"    
     
 
 module particleFlow = PFProducer {
@@ -22,6 +24,9 @@ module particleFlow = PFProducer {
         double EMin = 0.
     }
     # replace ParticleFilter.pTMin = 0.5
+
+    # flags 
+    untracked bool process_RecTracks = true
 
     # Tracking algorithms
     string Fitter      = "KFFittingSmoother"   
