@@ -94,6 +94,6 @@ module iterativeCone5PFJets = IterativeConeJetProducer {
     using IconeJetParameters
     double towerThreshold = 0.5       
     double coneRadius = 0.5
-    string src = "particleFlow"
+    InputTag src = particleFlow
     untracked string jetType = "BasicJet"
 }

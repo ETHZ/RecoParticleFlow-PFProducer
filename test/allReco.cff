@@ -235,15 +235,15 @@ sequence localreco = {calolocalreco, trackerlocalreco, muonlocalreco}
 #
 # global reconstruction
 #
-sequence ckftracks = {globalPixelSeeds & ckfTrackCandidates & ctfWithMaterialTracks} 
-sequence electronreconstruction = {islandClusteringSequence}
-sequence caloTowersRec = { towerMaker, caloTowers }
-sequence jetmetrecontruction = {caloTowersRec, caloJetMet, caloJetMetGen}
+#sequence ckftracks = {globalPixelSeeds & ckfTrackCandidates & ctfWithMaterialTracks} 
+#sequence electronreconstruction = {islandClusteringSequence}
+#sequence caloTowersRec = { towerMaker, caloTowers }
+#sequence jetmetrecontruction = {caloTowersRec, caloJetMet, caloJetMetGen}
 # all global reconstruction
-sequence globalreco = {ckftracks,electronreconstruction,jetmetrecontruction}
+#sequence globalreco = {ckftracks,electronreconstruction,jetmetrecontruction}
 #
 #   path p1 = { VtxSmeared, SimG4Object, mix, doDigi }
-path p1 = { g4SimHits, mix, doDigi, localreco, globalreco}
+path p1 = { g4SimHits, mix, doDigi, localreco}
 
 endpath outpath = { ALL-RECO }
 		
