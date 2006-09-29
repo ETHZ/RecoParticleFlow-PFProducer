@@ -1,48 +1,36 @@
-# initialize  MessageLogger
-include "FWCore/MessageService/data/MessageLogger.cfi"
-replace MessageLogger.cout.threshold = "ERROR"
-replace MessageLogger.cerr.default.limit = 10
 
-service = Timing {}
+# service = Timing {}
 
-service = Tracer { untracked string indention = "$$"}	
+# service = Tracer { untracked string indention = "$$"}	
 
-#Geometry
+# Geometry
 #
 include "Geometry/CMSCommonData/data/cmsSimIdealGeometryXML.cfi"
 
 es_prefer = XMLIdealGeometryESSource {}
 
-#  es_module = TrackerGeometricDetESModule {}
-#  es_module = TrackerDigiGeometryESModule {}
 
 # Magnetic Field
 #
 include "MagneticField/Engine/data/volumeBasedMagneticField.cfi"
 
+
 # Geant4-based CMS Detector simulation
 #
 include "SimG4Core/Application/data/SimG4Object.cfi"
 
-# Step 3 : Digitization of the simulated hits
-#
-
-# Step 3a : Digitization of the Tracker
-#
-
-# required for Pixel and SiStrip Digitizers
-#
 
 # Pixel's digitization
 #
 include "SimTracker/SiPixelDigitizer/data/PixelDigi.cfi"
+
 
 # SiStrip's digitization
 #
 include "SimTracker/SiStripDigitizer/data/SiStripDigi.cfi"
 
 
-# Step 3b : Digitization of Ecal and Hcal
+# Digitization of Ecal and Hcal
 
 include "SimCalorimetry/EcalSimProducers/data/ecalDigiSequence.cff"
 
@@ -50,7 +38,7 @@ include "CalibCalorimetry/HcalPlugins/data/hardwired_conditions.cfi"
 include "SimCalorimetry/HcalSimProducers/data/hcaldigi.cfi"
 
 
-# Step 3c : Muon Digitization
+# Muon Digitization
 
 
 # this holds CSC geom service, as need for CSC digi's
@@ -104,7 +92,7 @@ module mix = MixingModule
     #          gun and a file made with a single pion gun, because PartID
     #          is a *tracked* parameter in the gun's PSet;
     #          however, you can merge together files made with other generators,
-    #          for example, PythiaSource, because all parameters of it would be
+    #          for example, Pythiaource, because all parameters of it would be
     #          *untracked*
     #
     #         untracked vstring fileNames =
@@ -158,10 +146,12 @@ include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 include "RecoLocalCalo/HcalRecProducers/data/HcalSimpleReconstructor-hbhe.cfi"
 include "RecoLocalCalo/HcalRecProducers/data/HcalSimpleReconstructor-ho.cfi"
 include "RecoLocalCalo/HcalRecProducers/data/HcalSimpleReconstructor-hf.cfi"
+
 #
 # ECAL reconstruction
 #
 include "RecoLocalCalo/EcalRecProducers/data/ecalLocalRecoSequence.cff"
+
 #
 # Global  reco
 #
@@ -192,32 +182,32 @@ include "RecoEcal/EgammaClusterProducers/data/islandClusteringSequence.cff"
 
 # include "Configuration/Applications/data/reco-application-calorimetry-caltowers.cff"
 # Calo geometry/topology services
-include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
+# include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 
-#include "Geometry/CaloEventSetup/data/CaloTowerConstituents.cfi"
-es_module = CaloTowerConstituentsMapBuilder {
-    untracked string MapFile="Geometry/CaloTopology/data/CaloTowerEEGeometric.map.gz"
-}
+# include "Geometry/CaloEventSetup/data/CaloTowerConstituents.cfi"
+# es_module = CaloTowerConstituentsMapBuilder {
+#    untracked string MapFile="Geometry/CaloTopology/data/CaloTowerEEGeometric.map.gz"
+# }
 
-include "Geometry/CaloEventSetup/data/CaloTopology.cfi"
-es_module = HcalTopologyIdealEP {}
+# include "Geometry/CaloEventSetup/data/CaloTopology.cfi"
+# es_module = HcalTopologyIdealEP {}
 
-include "RecoJets/JetProducers/data/CaloTowerSchemeB.cfi"
+# include "RecoJets/JetProducers/data/CaloTowerSchemeB.cfi"
 
 #  include "RecoLocalCalo/CaloTowersCreator/data/calocandidatemaker.cfi"
-module caloTowers = CaloTowerCandidateCreator {
-    string src = 'towerMaker'
-    double minimumEt = -1
-    double minimumE = -1
-}
+# module caloTowers = CaloTowerCandidateCreator {
+#     string src = 'towerMaker'
+#    double minimumEt = -1
+#    double minimumE = -1
+#}
 
-include "Configuration/Applications/data/reco-application-calorimetry-jetmet.cff"
-include "Configuration/Applications/data/reco-application-calorimetry-jetmet-gen.cff"
+# include "Configuration/Applications/data/reco-application-calorimetry-jetmet.cff"
+# include "Configuration/Applications/data/reco-application-calorimetry-jetmet-gen.cff"
 
 #
 # now the order of execution
 #  
-# digitization
+# digitization ------------------------------------------------------------------------------
 # 
 sequence trDigi = { siPixelDigis & siStripDigis }
 sequence calDigi = { ecalDigiSequence & hcalDigis }
@@ -225,7 +215,7 @@ sequence muonDigi = { muonCSCDigis & muonDTDigis & muonRPCDigis }
 # all digitization
 sequence doDigi = { trDigi & calDigi & muonDigi   }
 #
-# local reconstruction
+# local reconstruction ---------------------------------------------------------------------- 
 # 
 sequence trackerlocalreco = { siPixelClusters & siPixelRecHits & siStripClusters & siStripMatchedRecHits }
 sequence muonlocalreco = { rpcRecHits & csc2DRecHits & cscSegments & dt1DRecHits & dt2DSegments & dt4DSegments }
@@ -233,17 +223,13 @@ sequence calolocalreco = { ecalLocalRecoSequence & hbhereco & hfreco & horeco }
 # all local reconstruction
 sequence localreco = {calolocalreco, trackerlocalreco, muonlocalreco}
 #
-# global reconstruction
+# global reconstruction ---------------------------------------------------------------------
 #
 sequence ckftracks = {globalPixelSeeds & ckfTrackCandidates & ctfWithMaterialTracks} 
-#sequence electronreconstruction = {islandClusteringSequence}
-#sequence caloTowersRec = { towerMaker, caloTowers }
-#sequence jetmetrecontruction = {caloTowersRec, caloJetMet, caloJetMetGen}
-# all global reconstruction
 sequence globalreco = {ckftracks}
-#
-#   path p1 = { VtxSmeared, SimG4Object, mix, doDigi }
-path p1 = { g4SimHits, mix, doDigi, localreco, globalreco}
 
-endpath outpath = { ALL-RECO }
+# path p1 = { g4SimHits, mix, doDigi, localreco, globalreco}
+sequence allReco = {g4SimHits, mix, doDigi, localreco, globalreco}
+
+# endpath outpath = { ALL-RECO }
 		
