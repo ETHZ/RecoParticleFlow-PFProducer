@@ -11,8 +11,8 @@ source = FlatRandomEGunSource
 	untracked double MaxEta = 3
 	untracked double MinPhi = -3.14159265358979323846  # it must be in radians
 	untracked double MaxPhi =  3.14159265358979323846
-	untracked double MinE   = 20
-	untracked double MaxE   = 20.01
+	untracked double MinE   = 0
+	untracked double MaxE   = 10
     }      
     untracked int32 Verbosity = 0 # for printouts, set it to 1 (or greater)   
 }
