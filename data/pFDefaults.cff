@@ -1,5 +1,5 @@
 #Geometry
-include "Geometry/CMSCommonData/data/cmsSimIdealGeometryXML.cfi"
+#include "Geometry/CMSCommonData/data/cmsSimIdealGeometryXML.cfi"
 es_prefer = XMLIdealGeometryESSource {}    
 include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 
@@ -94,6 +94,6 @@ module iterativeCone5PFJets = IterativeConeJetProducer {
     using IconeJetParameters
     double towerThreshold = 0.5       
     double coneRadius = 0.5
-    string src = "particleFlow"
+    InputTag src = particleFlow
     untracked string jetType = "BasicJet"
 }
