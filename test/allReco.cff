@@ -1,235 +1,47 @@
+###############################
+#  Example configuration file, to be used with CMSSW_1_0_0
+#  By Freya Blekman, f.blekman@imperial.ac.uk
 
-# service = Timing {}
-
-# service = Tracer { untracked string indention = "$$"}	
-
-# Geometry
-#
-include "Geometry/CMSCommonData/data/cmsSimIdealGeometryXML.cfi"
-
-es_prefer = XMLIdealGeometryESSource {}
+###############################
+# include services
+include "Configuration/ReleaseValidation/data/Services.cfi"
 
 
-# Magnetic Field
-#
-include "MagneticField/Engine/data/volumeBasedMagneticField.cfi"
+###############################
+# initialize  MessageLogger
+include "FWCore/MessageLogger/data/MessageLogger.cfi"
+
+###############################
+# make sure you have a random number generator
+
+service = RandomNumberGeneratorService
+{
+    untracked uint32 sourceSeed = 98765
+    PSet moduleSeeds =
+    {
+	untracked uint32 VtxSmeared = 123456789
+    }
+}
 
 
-# Geant4-based CMS Detector simulation
-#
+###############################
+# include the 'official' simulation/reconstruction file
+# this file contains the path definitions for everything necessary to reconstruct things.
+
 include "SimG4Core/Application/data/SimG4Object.cfi"
 
+include "SimG4Core/Application/data/DigiWithEcalZeroSuppression.cff"
 
-# Pixel's digitization
-#
-include "SimTracker/SiPixelDigitizer/data/PixelDigi.cfi"
+sequence smear_and_geant = { g4SimHits}
 
-
-# SiStrip's digitization
-#
-include "SimTracker/SiStripDigitizer/data/SiStripDigi.cfi"
+sequence digitization = {doAllDigiWithEcalZeroSup}
 
 
-# Digitization of Ecal and Hcal
+include "Configuration/Examples/data/RECO.cff"
 
-include "SimCalorimetry/EcalSimProducers/data/ecalDigiSequence.cff"
+###############################
+# now define what you want to do
+#path p = {smear_and_geant,digitization, reconstruction}
+# digitization and reconstruction are sequences of actions that are defined in the .cff files that were included
 
-include "CalibCalorimetry/HcalPlugins/data/hardwired_conditions.cfi"
-include "SimCalorimetry/HcalSimProducers/data/hcaldigi.cfi"
-
-
-# Muon Digitization
-
-
-# this holds CSC geom service, as need for CSC digi's
-# and the digitizer itself
-#
-include "Geometry/CSCGeometry/data/cscGeometry.cfi"
-include "SimMuon/CSCDigitizer/data/muoncscdigi.cfi"
-
-# Muon DT digi's
-
-# this holds geom.service as needed by DT digi's
-# and the digitizer itself
-#
-include "Geometry/DTGeometry/data/dtGeometry.cfi"
-include "SimMuon/DTDigitizer/data/muondtdigi.cfi"
-
-# this holds geom.service for the RPC digi's
-# the digitizer itself still needs to be given explicitely
-# but since it has no parameters, it doesn't matter...
-# only maybe the label should be agreed upon...
-#
-# Note : as of May 3, 2006, Muon/RPC digi's *hang*
-#        thus it's been taken out of the path...
-# 
-include "Geometry/RPCGeometry/data/rpcGeometry.cfi" 
-include "SimMuon/RPCDigitizer/data/muonrpcdigi.cfi"
-
-# Mixing Module is *required* to simulated Ecal/Hcal/Muon digitization !
-
-module mix = MixingModule
-{
-    #      secsource input = PoolRASource
-    #      {
-    #
-    # starting 050, you can skip secsource block at all if you don't
-    # wnat to model mixing/pileup at all;
-    # however, an at least "empty mixing" need to be present if you
-    # want to perform Ecal/Hcal/CSC/DT digitization - those explicitely
-    # require presence of CrossingFrame in the edm::Event
-    #
-    # alternatively, you can set averageNumber=0 if you don't want
-    # to model the pileup
-    #
-    # to the secsource/PoolRASource, you can give just 1 file or more;
-    # this files will make a "concatinated buffer", which will go circular
-    # until the loop of primary events is done - thus, it'll never run out
-    #
-    # WARNING: you can only give miltiple files, if they're generated with
-    #          identical sets of tracked parameters;
-    #          for example, you canNOT give a file made with a single muon
-    #          gun and a file made with a single pion gun, because PartID
-    #          is a *tracked* parameter in the gun's PSet;
-    #          however, you can merge together files made with other generators,
-    #          for example, Pythiaource, because all parameters of it would be
-    #          *untracked*
-    #
-    #         untracked vstring fileNames =
-    #         {'file:/afs/cern.ch/cms/geant4rep/genntpl/muon_simhit_for_pileup.060pre1.root' }
-    #         string type = "poisson"
-    #         double averageNumber = 3  # setting this param. to 0 means "No pile-up",
-    #                                   # that is, digitize current crossing only
-    #         int32 minBunch = -3
-    #         int32 maxBunch = 5
-    #         int32 seed = 1234567
-    #      }
-    int32 bunchspace = 25
-}
-#
-# Tracker Local Reco
-#
-
-include "RecoLocalTracker/SiPixelClusterizer/data/SiPixelClusterizer.cfi"
-include "RecoLocalTracker/SiStripClusterizer/data/SiStripClusterizer.cfi"	
-include "RecoLocalTracker/SiStripRecHitConverter/data/StripCPEfromTrackAngle.cfi"
-include "RecoLocalTracker/SiPixelRecHits/data/SiPixelRecHits.cfi"
-include "RecoLocalTracker/SiStripRecHitConverter/data/SiStripRecHitConverter.cfi"
-#
-# muon local reco
-#
-# RPC
-#
-include "RecoLocalMuon/RPCRecHit/data/RPCRecHit.cfi"
-#
-# CSC
-#
-include "RecoLocalMuon/CSCRecHit/data/CSCRecHit2DProducer.cfi"
-include "RecoLocalMuon/CSCSegment/data/CSCSegmentProducer.cfi"
-#
-# DT
-#
-include "RecoLocalMuon/DTRecHit/data/DTRecHit1DProducer_ParamDrift.cfi"
-include "RecoLocalMuon/DTSegment/data/DTSegment2DProducer_CombPatternReco2D_ParamDrift.cfi"
-include "RecoLocalMuon/DTSegment/data/DTSegment4DProducer_CombPatternReco4D_ParamDrift.cfi"
-#
-# ECAL + HCAL Local Reco
-#
-# calo geometry
-include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
-#
-# HCAL calibrations
-#  include "CalibCalorimetry/HcalPlugins/data/hardwired_conditions.cfi"
-#
-#HCAL reconstruction
-#
-include "RecoLocalCalo/HcalRecProducers/data/HcalSimpleReconstructor-hbhe.cfi"
-include "RecoLocalCalo/HcalRecProducers/data/HcalSimpleReconstructor-ho.cfi"
-include "RecoLocalCalo/HcalRecProducers/data/HcalSimpleReconstructor-hf.cfi"
-
-#
-# ECAL reconstruction
-#
-include "RecoLocalCalo/EcalRecProducers/data/ecalLocalRecoSequence.cff"
-
-#
-# Global  reco
-#
-# Tracker Tracking etc
-#
-# Seeds 
-#
-include "RecoTracker/TkSeedGenerator/data/GlobalPixelSeeds.cff"
-#
-# Ckf
-#
-include "RecoTracker/CkfPattern/data/CkfTrackCandidates.cff"
-#
-# Final Fit
-#
-include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
-#
-# electrons
-# 
-#------------------
-#Island clustering:
-#------------------
-# create sequence for island clustering
-include "RecoEcal/EgammaClusterProducers/data/islandClusteringSequence.cff"                                                             
-#
-# Jets/MET
-#
-
-# include "Configuration/Applications/data/reco-application-calorimetry-caltowers.cff"
-# Calo geometry/topology services
-# include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
-
-# include "Geometry/CaloEventSetup/data/CaloTowerConstituents.cfi"
-# es_module = CaloTowerConstituentsMapBuilder {
-#    untracked string MapFile="Geometry/CaloTopology/data/CaloTowerEEGeometric.map.gz"
-# }
-
-# include "Geometry/CaloEventSetup/data/CaloTopology.cfi"
-# es_module = HcalTopologyIdealEP {}
-
-# include "RecoJets/JetProducers/data/CaloTowerSchemeB.cfi"
-
-#  include "RecoLocalCalo/CaloTowersCreator/data/calocandidatemaker.cfi"
-# module caloTowers = CaloTowerCandidateCreator {
-#     string src = 'towerMaker'
-#    double minimumEt = -1
-#    double minimumE = -1
-#}
-
-# include "Configuration/Applications/data/reco-application-calorimetry-jetmet.cff"
-# include "Configuration/Applications/data/reco-application-calorimetry-jetmet-gen.cff"
-
-#
-# now the order of execution
-#  
-# digitization ------------------------------------------------------------------------------
-# 
-sequence trDigi = { siPixelDigis & siStripDigis }
-sequence calDigi = { ecalDigiSequence & hcalDigis }
-sequence muonDigi = { muonCSCDigis & muonDTDigis & muonRPCDigis }
-# all digitization
-sequence doDigi = { trDigi & calDigi & muonDigi   }
-#
-# local reconstruction ---------------------------------------------------------------------- 
-# 
-sequence trackerlocalreco = { siPixelClusters & siPixelRecHits & siStripClusters & siStripMatchedRecHits }
-sequence muonlocalreco = { rpcRecHits & csc2DRecHits & cscSegments & dt1DRecHits & dt2DSegments & dt4DSegments }
-sequence calolocalreco = { ecalLocalRecoSequence & hbhereco & hfreco & horeco }
-# all local reconstruction
-sequence localreco = {calolocalreco, trackerlocalreco, muonlocalreco}
-#
-# global reconstruction ---------------------------------------------------------------------
-#
-sequence ckftracks = {globalPixelSeeds & ckfTrackCandidates & ctfWithMaterialTracks} 
-sequence globalreco = {ckftracks}
-
-# path p1 = { g4SimHits, mix, doDigi, localreco, globalreco}
-sequence allReco = {g4SimHits, mix, doDigi, localreco, globalreco}
-
-# endpath outpath = { ALL-RECO }
-		
+#endpath outpath = {GEN-SIM-DIGI-RECO}	
