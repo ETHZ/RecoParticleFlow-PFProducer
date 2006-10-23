@@ -29,7 +29,7 @@ module particleFlow = PFProducer {
 
     # flags 
     untracked bool process_RecTracks = true
-    untracked bool process_Particles = false
+    untracked bool process_Particles = true
     untracked bool do_ParticleFlow = true
 
     # Tracking parameters
