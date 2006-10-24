@@ -15,7 +15,7 @@ include "IOMC/EventVertexGenerators/data/VtxSmearedGauss.cfi"
 include "SimG4Core/Application/data/g4SimHits.cfi"
 
 # no vertex smearing:
-replace g4SimHits.Generator.HepMCProductLabel = "source"
+# replace g4SimHits.Generator.HepMCProductLabel = "source"
 
 # This is the full sequence of digitizers 
 # (Pixels, SiStrips, Ecal, Hcal, Muon(CSC,DT,RPC)
