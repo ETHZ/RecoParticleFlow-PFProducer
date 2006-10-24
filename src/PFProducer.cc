@@ -252,7 +252,7 @@ void PFProducer::produce(Event& iEvent,
 			 const EventSetup& iSetup) 
 {
   
-  LogDebug("PFProducer")<<"Produce event: "<<iEvent.id().event()
+  LogDebug("PFProducer")<<"START event: "<<iEvent.id().event()
 			<<" in run "<<iEvent.id().run()<<endl;
   
   
@@ -859,9 +859,14 @@ void PFProducer::produce(Event& iEvent,
     delete *iele;
   }
   
+  LogDebug("PFProducer")<<"Putting products in the event"<<endl;
+  
   iEvent.put(pOutputPFRecTrackCollection);
   iEvent.put(pOutputPFParticleCollection);
   iEvent.put(pOutputCandidateCollection);
+
+  LogDebug("PFProducer")<<"STOP event: "<<iEvent.id().event()
+			<<" in run "<<iEvent.id().run()<<endl;
 }
 
 

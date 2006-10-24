@@ -1,15 +1,17 @@
 #Geometry
+
 #include "Geometry/CMSCommonData/data/cmsSimIdealGeometryXML.cfi"
 #es_prefer = XMLIdealGeometryESSource {}    
-#include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
+
+include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 
 # include used for track reconstruction 
 # note that tracking is redone since we need updated hits and they 
 # are not stored in the event! check with Renaud
-#include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
+include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
 
 # The particle data table
-#include "SimGeneral/HepPDTESSource/data/pythiapdt.cfi"    
+include "SimGeneral/HepPDTESSource/data/pythiapdt.cfi"    
     
 
 module particleFlow = PFProducer {
