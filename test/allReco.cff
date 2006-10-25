@@ -12,7 +12,7 @@ include "Configuration/ReleaseValidation/data/Services.cfi"
 # this file contains the path definitions for everything necessary to reconstruct things.
 
 include "IOMC/EventVertexGenerators/data/VtxSmearedGauss.cfi"
-include "SimG4Core/Application/data/g4SimHits.cfi"
+include "SimG4Core/Application/data/SimG4Object.cfi"
 
 # no vertex smearing:
 # replace g4SimHits.Generator.HepMCProductLabel = "source"
