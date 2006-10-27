@@ -1,7 +1,7 @@
 source = FlatRandomEGunSource 
 { 
     untracked uint32 firstRun  = 1
-    untracked int32  maxEvents = 10
+    untracked int32  maxEvents = 100
     untracked PSet  PGunParameters =
     {
 	# PDG code for generated particle
