@@ -15,13 +15,19 @@ GetOptions ('min=s' => \$runmin,
 my $masterfile = shift;
 my $castordir = shift;
 
-my @rootfiles = `nsls $castordir`;
 
 print "input files  :\n";
 
-foreach my $rootfile (@rootfiles) {
-    print "\t\t$rootfile";
+my @rootfiles;
+
+my @tmpfiles = `nsls $castordir`;
+foreach my $file (@tmpfiles) {
+    if( $file =~ /\.root$/ ) {
+	push(@rootfiles, $file); 
+	print "\t\t$castordir/$file";
+    }
 }
+
 print "master       : $masterfile\n";
 
 
