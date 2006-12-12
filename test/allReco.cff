@@ -11,11 +11,17 @@ include "Configuration/ReleaseValidation/data/Services.cfi"
 # include the 'official' simulation/reconstruction file
 # this file contains the path definitions for everything necessary to reconstruct things.
 
-include "IOMC/EventVertexGenerators/data/VtxSmearedGauss.cfi"
-include "SimG4Core/Application/data/g4SimHits.cfi"
+## include "IOMC/EventVertexGenerators/data/VtxSmearedGauss.cfi"
+## include "SimG4Core/Application/data/g4SimHits.cfi"
 
 # no vertex smearing:
+
 replace g4SimHits.Generator.HepMCProductLabel = "source"
+
+include "Configuration/StandardSequences/data/MixingNoPileUp.cff" 
+include "Configuration/StandardSequences/data/Simulation.cff"
+include "Configuration/StandardSequences/data/VtxSmearedNoSmear.cff"
+include "Configuration/StandardSequences/data/Reconstruction.cff"
 
 # This is the full sequence of digitizers 
 # (Pixels, SiStrips, Ecal, Hcal, Muon(CSC,DT,RPC)
@@ -23,15 +29,9 @@ replace g4SimHits.Generator.HepMCProductLabel = "source"
 # it "returns" sequence called doAllDigi which can
 # be directly placed in the path
 #
-include "SimG4Core/Application/data/DigiWithEcalZeroSuppression.cff"
+## include "SimG4Core/Application/data/DigiWithEcalZeroSuppression.cff"
 
-sequence doG4SimHitsDigiEcalZeroSup = { VtxSmeared, g4SimHits, doAllDigiWithEcalZeroSup }
+## sequence doG4SimHitsDigiEcalZeroSup = { VtxSmeared, g4SimHits, doAllDigiWithEcalZeroSup }
 
-include "Configuration/Examples/data/RECO.cff"
+## include "Configuration/Examples/data/RECO.cff"
 
-###############################
-# now define what you want to do
-#path p = {smear_and_geant,digitization, reconstruction}
-# digitization and reconstruction are sequences of actions that are defined in the .cff files that were included
-
-#endpath outpath = {GEN-SIM-DIGI-RECO}	
