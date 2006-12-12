@@ -49,10 +49,10 @@ module particleFlow = PFProducer {
     untracked string PFClusterECALInstanceName = "ECAL"
     
     # instance name to find ecal PFClusters
-    untracked string PFClusterECALInstanceName = "HCAL"
+    untracked string PFClusterHCALInstanceName = "HCAL"
     
     # instance name to find ecal PFClusters
-    untracked string PFClusterECALInstanceName = "PS"
+    untracked string PFClusterPSInstanceName = "PS"
     
 
     # module label to find input sim tracks and sim vertices
