@@ -1,16 +1,3 @@
-#Geometry
-#include "Geometry/CMSCommonData/data/cmsSimIdealGeometryXML.cfi"
-#es_prefer = XMLIdealGeometryESSource {}    
-include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
-
-# include used for track reconstruction 
-# note that tracking is redone since we need updated hits and they 
-# are not stored in the event! check with Renaud
-include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
-
-# The particle data table
-#include "SimGeneral/HepPDTESSource/data/pythiapdt.cfi"    
-    
 
 module particleFlow = PFProducer {
 
@@ -86,14 +73,3 @@ module particleFlow = PFProducer {
     double  pf_ECAL_calib_p1 = 1  
 }
 
-# jet reconstruction --------------------------------------------------
-
-include "RecoJets/JetProducers/data/CaloJetIcone5.cfi"
-
-module iterativeCone5PFJets = IterativeConeJetProducer {
-    using IconeJetParameters
-    double towerThreshold = 0.5       
-    double coneRadius = 0.5
-    InputTag src = particleFlow
-    untracked string jetType = "BasicJet"
-}

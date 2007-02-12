@@ -6,11 +6,10 @@ module  tauHadronDecayFilter  = TauHadronDecayFilter {
     PSet ParticleFilter = {
 	# Particles with |eta| > etaMax (momentum direction at primary vertex)
 	# are not simulated
-	double etaMax = 588888.0
+	double etaMax = 10.0
 	# Charged particles with pT < pTMin (GeV/c) are not simulated
 	double pTMin =  0.
 	# Particles with energy smaller than EMin (GeV) are not simulated
 	double EMin = 0.
-    }
-    
+    }    
 }

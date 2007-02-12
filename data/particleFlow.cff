@@ -1,0 +1,21 @@
+#Geometry
+include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
+
+# include used for track reconstruction 
+# note that tracking is redone since we need updated hits and they 
+# are not stored in the event!
+include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
+    
+include "RecoParticleFlow/PFProducer/data/particleFlow.cfi"
+
+# jet reconstruction --------------------------------------------------
+
+include "RecoJets/JetProducers/data/CaloJetIcone5.cfi"
+
+module iterativeCone5PFJets = IterativeConeJetProducer {
+    using IconeJetParameters
+    double towerThreshold = 0.5       
+    double coneRadius = 0.5
+    InputTag src = particleFlow
+    untracked string jetType = "BasicJet"
+}
