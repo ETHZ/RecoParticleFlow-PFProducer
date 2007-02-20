@@ -10,13 +10,13 @@ include "RecoParticleFlow/PFProducer/data/particleFlow.cfi"
 
 # jet reconstruction --------------------------------------------------
 
-include "RecoJets/JetProducers/data/CaloJetIcone5.cfi"
+# include "RecoJets/JetProducers/data/CaloJetIcone5.cfi"
 
-module iterativeCone5PFJets = IterativeConeJetProducer {
-    using IconeJetParameters
-    double towerThreshold = 0.5       
-    double coneRadius = 0.5
-    InputTag src = particleFlow
-    untracked string jetType = "BasicJet"
-}
+#module iterativeCone5PFJets = IterativeConeJetProducer {
+#    using IconeJetParameters
+#    double towerThreshold = 0.5       
+#    double coneRadius = 0.5
+#    InputTag src = particleFlow
+#    untracked string jetType = "BasicJet"
+#}
 
