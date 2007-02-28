@@ -22,6 +22,7 @@ include "Configuration/StandardSequences/data/MixingNoPileUp.cff"
 include "Configuration/StandardSequences/data/Simulation.cff"
 include "Configuration/StandardSequences/data/VtxSmearedNoSmear.cff"
 include "Configuration/StandardSequences/data/Reconstruction.cff"
+include "Configuration/StandardSequences/data/FakeConditions.cff" 
 
 # This is the full sequence of digitizers 
 # (Pixels, SiStrips, Ecal, Hcal, Muon(CSC,DT,RPC)
