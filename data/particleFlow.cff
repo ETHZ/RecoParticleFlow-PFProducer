@@ -5,30 +5,31 @@ include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 # note that tracking is redone since we need updated hits and they 
 # are not stored in the event!
 include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
-    
+
 include "RecoParticleFlow/PFProducer/data/particleFlow.cfi"
 
 # jet reconstruction --------------------------------------------------
 
- include "RecoJets/JetProducers/data/CaloJets.cfi"
- include "RecoParticleFlow/PFProducer/data/particleFlowJetCandidates.cfi"
- 
- 
- module iterativeCone5PFJet = IterativeConeJetProducer {
-     using IconeJetParameters  
-     double inputEtMin = 0.
-     double inputEMin = 0.
-     double towerThreshold = 0.5       
-     double coneRadius = 0.5
-     InputTag src = particleFlowJetCandidates
-     untracked string jetType = "BasicJet" 
- }
+include "RecoJets/JetProducers/data/CaloJets.cfi"
+include "RecoParticleFlow/PFProducer/data/particleFlowJetCandidates.cfi"
+
+
+module iterativeCone5PFJet = IterativeConeJetProducer {
+    using IconeJetParameters  
+    double inputEtMin = 0.
+    double inputEMin = 0.
+    double towerThreshold = 0.5       
+    double coneRadius = 0.5
+    InputTag src = particleFlowJetCandidates
+    untracked string jetType = "BasicJet" 
+}
+
 module Fastjet10PFJet = FastJetProducer {
-	using FastjetParameters
-        double inputEtMin = 0.
-        double inputEMin = 0.
-        double towerThreshold = 0.5  
-	InputTag src = particleFlowJetCandidates
-        double FJ_ktRParam = 1.0
-	untracked string jetType = "BasicJet" 
- }
+    using FastjetParameters
+    double inputEtMin = 0.
+    double inputEMin = 0.
+    double towerThreshold = 0.5  
+    InputTag src = particleFlowJetCandidates
+    double FJ_ktRParam = 1.0
+    untracked string jetType = "BasicJet" 
+}
