@@ -14,7 +14,7 @@ include "RecoJets/JetProducers/data/CaloJets.cfi"
 include "RecoParticleFlow/PFProducer/data/particleFlowJetCandidates.cfi"
 
 
-module iterativeCone5PFJet = IterativeConeJetProducer {
+module iterativeCone5PFJets = IterativeConeJetProducer {
     using IconeJetParameters  
     double inputEtMin = 0.
     double inputEMin = 0.
@@ -24,7 +24,7 @@ module iterativeCone5PFJet = IterativeConeJetProducer {
     untracked string jetType = "BasicJet" 
 }
 
-module Fastjet10PFJet = FastJetProducer {
+module Fastjet10PFJets = FastJetProducer {
     using FastjetParameters
     double inputEtMin = 0.
     double inputEMin = 0.
