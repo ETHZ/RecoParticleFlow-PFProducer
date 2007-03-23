@@ -830,21 +830,37 @@ PFProducer::processRecTracks(auto_ptr< reco::PFRecTrackCollection >&
 	showerMaxWall 
 	  = ReferenceCountingPointer<Surface>(new BoundPlane(Surface::PositionType(0,0,-zCyl), TkRotation<float>(), SimpleDiskBounds(0., rCyl, -epsilon, epsilon))); 
 	break;
+      default : 
+	showerMaxWall = 0;
       }
-      TrajectoryStateOnSurface showerMaxTSOS = 
-	fwdPropagator.propagate(ecalTSOS, *showerMaxWall);
-      GlobalPoint vShowerMax  = showerMaxTSOS.globalParameters().position();
-      GlobalVector pShowerMax = showerMaxTSOS.globalParameters().momentum();
-      math::XYZPoint posShowerMax(vShowerMax.x(), vShowerMax.y(), 
-				  vShowerMax.z());
-      math::XYZTLorentzVector momShowerMax(pShowerMax.x(), pShowerMax.y(), 
-					   pShowerMax.z(), pShowerMax.mag());
-      reco::PFTrajectoryPoint eSMaxPt(-1, 
-				      reco::PFTrajectoryPoint::ECALShowerMax, 
-				      posShowerMax, momShowerMax);
-      track.addPoint(eSMaxPt);
-      LogDebug("PFProducer")<<"ecal shower maximum point "<<eSMaxPt 
-			    <<endl;    
+      
+      if(showerMaxWall)
+      {
+         TrajectoryStateOnSurface showerMaxTSOS = 
+         fwdPropagator.propagate(ecalTSOS, *showerMaxWall);
+         if(! showerMaxTSOS.isValid() )
+         {
+            LogDebug("PFProducer")<<"showerMaxTSOS is invalid"<<endl;
+            continue;
+         }
+         GlobalPoint vShowerMax  = showerMaxTSOS.globalParameters().position();
+         GlobalVector pShowerMax = showerMaxTSOS.globalParameters().momentum();
+         math::XYZPoint posShowerMax(vShowerMax.x(), vShowerMax.y(), 
+                 vShowerMax.z());
+         math::XYZTLorentzVector momShowerMax(pShowerMax.x(), pShowerMax.y(), 
+                     pShowerMax.z(), pShowerMax.mag());
+         reco::PFTrajectoryPoint eSMaxPt(-1, 
+                     reco::PFTrajectoryPoint::ECALShowerMax, 
+                     posShowerMax, momShowerMax);
+         track.addPoint(eSMaxPt);
+         LogDebug("PFProducer")<<"ecal shower maximum point "<<eSMaxPt 
+                <<endl;
+      }
+      else
+      {
+         LogWarning("PFProducer")<<"Propagation to showerMax : side is not 0, 1 or -1 : "<<side<<". Skip track"<<endl;
+         continue; // if don't want to skip track, should add a dummyeSMaxPt to track
+      }
     
       // Propagate track to HCAL entrance
 
