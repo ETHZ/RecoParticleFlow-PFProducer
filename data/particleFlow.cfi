@@ -69,7 +69,8 @@ module particleFlow = PFProducer {
 
     # ECAL calibration parameters. 
     # E_calib =  pf_ECAL_calib_p0 + E_raw * pf_ECAL_calib_p1
-    double  pf_ECAL_calib_p0 = 0
-    double  pf_ECAL_calib_p1 = 1  
+    include "RecoParticleFlow/PFClusterTools/data/CalibrationParametersECAL.cff"
+    #double  pf_ECAL_calib_p0 = 0
+    #double  pf_ECAL_calib_p1 = 1  
 }
 
