@@ -15,6 +15,7 @@
 // #include <TH1F.h>
 
 class TH1F;
+class TFile;
 
 class TauBenchmarkAnalyzer : public edm::EDAnalyzer {
  public:
@@ -41,6 +42,9 @@ class TauBenchmarkAnalyzer : public edm::EDAnalyzer {
   int verbosity_;
   TH1F* h_deltaETvisible_CMSSW_MCEHT_;
   TH1F* h_deltaETvisible_CMSSW_MCPF_;
+
+  /// output root file
+  TFile* file_;
 };
 
 #endif

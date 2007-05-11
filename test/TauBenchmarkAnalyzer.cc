@@ -4,10 +4,11 @@
 // user include files
 
 #include "RecoParticleFlow/PFProducer/test/TauBenchmarkAnalyzer.h"
-#include "DataFormats/TrackReco/interface/Track.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "DataFormats/Candidate/interface/Candidate.h"
+#include "FWCore/Utilities/interface/Exception.h"
 
+#include "DataFormats/TrackReco/interface/Track.h"
+#include "DataFormats/Candidate/interface/Candidate.h"
 #include "DataFormats/ParticleFlowReco/interface/PFSimParticle.h"
 #include "DataFormats/ParticleFlowReco/interface/PFTrajectoryPoint.h"
 #include "DataFormats/ParticleFlowReco/interface/PFTrajectoryPointFwd.h"
@@ -21,6 +22,7 @@
 
 #include "DataFormats/ParticleFlowReco/interface/PFRecTrack.h"
 #include "DataFormats/ParticleFlowReco/interface/PFRecTrackFwd.h"
+#include "DataFormats/ParticleFlowReco/interface/PFSimParticle.h"
 #include "RecoParticleFlow/PFClusterAlgo/interface/PFClusterAlgo.h"
 #include "RecoParticleFlow/PFAlgo/interface/PFBlock.h"
 #include "RecoParticleFlow/PFAlgo/interface/PFBlockElement.h"
@@ -33,25 +35,12 @@
 #include "RecoParticleFlow/PFRootEvent/interface/EventColin.h" 
 
 #include <TFile.h>
-#include <TTree.h>
-#include <TCanvas.h>
-#include <TPad.h>
-#include <TMarker.h>
 #include <TH2F.h>
 #include <TH1F.h>
-#include <TCutG.h>
-#include <TPolyLine.h>
-#include <TColor.h>
-#include "TGraph.h"
-#include "TMath.h"
-#include "TLine.h"
-#include "TLatex.h"
-#include "TVector3.h"
-#include "TLorentzVector.h"
+#include <TLorentzVector.h>
 
-#include "RecoParticleFlow/PFRootEvent/interface/IO.h"
-#include "RecoParticleFlow/PFRootEvent/interface/Utils.h" 
-#include "DataFormats/ParticleFlowReco/interface/PFSimParticle.h"
+// #include "RecoParticleFlow/PFRootEvent/interface/IO.h"
+// #include "RecoParticleFlow/PFRootEvent/interface/Utils.h" 
 
 
 using namespace edm;
@@ -66,14 +55,32 @@ TauBenchmarkAnalyzer::TauBenchmarkAnalyzer(const edm::ParameterSet& iConfig)
    //now do what ever initialization is needed
   testcounter_=0;
   total_=0;    
-  h_deltaETvisible_CMSSW_MCEHT_
-        = new TH1F("h_deltaETvisible_CMSSW_MCEHT","Jet Et difference CaloTowers-MC"
-        ,500,-50,50);
-  h_deltaETvisible_CMSSW_MCPF_
-        = new TH1F("h_deltaETvisible_CMSSW_MCPF" ,"Jet Et difference ParticleFlow-MC"
-        ,500,-50,50);
 
+  string outputRootFileName 
+    = iConfig.getUntrackedParameter< string >("outputRootFileName", 
+					      "tauBenchmark.root");
+
+  LogDebug("TauBenchmarkAnalyzer")
+    <<"opening output root file "<<outputRootFileName<<endl;
+  
+  file_ = TFile::Open(outputRootFileName.c_str(), "RECREATE");
  
+  if(file_->IsZombie() ) {
+    string err = "output file ";
+    err += outputRootFileName;
+    err += " can't be opened";
+    throw cms::Exception("OutputFileOpen",err);
+  }
+
+  h_deltaETvisible_CMSSW_MCEHT_
+    = new TH1F("h_deltaETvisible_MCEHT","Jet Et difference CaloTowers-MC"
+	       ,500,-50,50);
+  
+  h_deltaETvisible_CMSSW_MCPF_
+    = new TH1F("h_deltaETvisible_MCPF" ,
+	       "Jet Et difference ParticleFlow-MC"
+	       ,500,-50,50);
+
 }
 
 
@@ -85,21 +92,25 @@ TauBenchmarkAnalyzer::~TauBenchmarkAnalyzer()
 
 }
 
-// ------------ method called once each job just before starting event loop  ------------
+
 void TauBenchmarkAnalyzer::beginJob(const edm::EventSetup&)
 {
   std::cout<<"Starting MyAnalyzer"<<std::endl;
   verbosity_=VERBOSE=1;
 }
 
-// ------------ method called once each job just after ending the event loop  ------------
+
 void TauBenchmarkAnalyzer::endJob() {
-  std::cout<<"Testcounter: "<<testcounter_<<std::endl;
-  std::cout<<"Total: "<<total_<<std::endl; 
-  TCanvas c1("c1","delta et",200,200,800,600);
-  h_deltaETvisible_CMSSW_MCPF_->Draw("");
-  h_deltaETvisible_CMSSW_MCEHT_->Draw("Same");
-  c1.Print("test.jpg");
+  // std::cout<<"Testcounter: "<<testcounter_<<std::endl;
+  // std::cout<<"Total: "<<total_<<std::endl; 
+  //   TCanvas c1("c1","delta et",200,200,800,600);
+  //   h_deltaETvisible_CMSSW_MCPF_->Draw("");
+  //   h_deltaETvisible_CMSSW_MCEHT_->Draw("Same");
+  //   c1.Print("test.jpg");
+//   h_deltaETvisible_CMSSW_MCEHT_->Write();
+//   h_deltaETvisible_CMSSW_MCPF_->Write();
+  file_->Write();
+  file_->Close();
 }
 
 
