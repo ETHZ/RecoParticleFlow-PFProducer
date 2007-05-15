@@ -4,6 +4,6 @@
 <use name=DataFormats/ParticleFlowReco>
 <use name=DataFormats/ParticleFlowCandidate>
 <use name=root>
-<flags SEAL_PLUGIN_NAME=testRecoParticleFlowPFProducer>
+<flags EDM_PLUGIN=1>
 <library file=*.cc name=testRecoParticleFlowPFProducer>
 </library>
