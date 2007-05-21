@@ -10,7 +10,7 @@ include "RecoParticleFlow/PFProducer/data/particleFlow.cfi"
 
 # jet reconstruction --------------------------------------------------
 
-include "RecoJets/JetProducers/data/CaloJets.cfi"
+include "RecoJets/Configuration/data/RecoJets.cff"
 include "RecoParticleFlow/PFProducer/data/particleFlowJetCandidates.cfi"
 
 
