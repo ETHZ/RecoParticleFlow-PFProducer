@@ -12,9 +12,12 @@ module particleFlow = PFProducer {
     # module label to find input rec tracks 
     untracked string BlocksModuleLabel = "particleFlowBlock"
 
-    
     # instance name to find ecal PFClusters
     untracked string  BlocksInstanceName = ""
+
+    # verbosity 
+    untracked bool   verbose            = false
+
 
    # particle flow parameters ---------------------------------
 
