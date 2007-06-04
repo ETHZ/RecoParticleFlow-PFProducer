@@ -12,6 +12,9 @@ include "RecoParticleFlow/PFProducer/data/particleFlow.cfi"
 
 include "RecoJets/JetProducers/data/CaloJets.cfi"
 include "RecoParticleFlow/PFProducer/data/particleFlowJetCandidates.cfi"
+include "RecoJets/JetProducers/data/CaloJetParameters.cfi"
+include "RecoJets/JetProducers/data/IconeJetParameters.cfi"
+include "RecoJets/JetProducers/data/FastjetParameters.cfi"
 
 
 module iterativeCone5PFJets = IterativeConeJetProducer {
@@ -21,7 +24,7 @@ module iterativeCone5PFJets = IterativeConeJetProducer {
     double towerThreshold = 0.5       
     double coneRadius = 0.5
     InputTag src = particleFlowJetCandidates
-    untracked string jetType = "BasicJet" 
+    untracked string jetType = "PFJet" 
 }
 
 module Fastjet10PFJets = FastJetProducer {
@@ -31,5 +34,6 @@ module Fastjet10PFJets = FastJetProducer {
     double towerThreshold = 0.5  
     InputTag src = particleFlowJetCandidates
     double FJ_ktRParam = 1.0
-    untracked string jetType = "BasicJet" 
+    double PtMin =1
+    untracked string jetType = "PFJet" 
 }
