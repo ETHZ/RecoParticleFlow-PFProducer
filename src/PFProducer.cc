@@ -49,6 +49,10 @@ PFProducer::PFProducer(const edm::ParameterSet& iConfig) {
 			 calibParamECAL_slope, 
 			 nSigmaECAL, 
 			 nSigmaHCAL );
+
+  verbose_ = 
+    iConfig.getUntrackedParameter<bool>("verbose",false);
+
 }
 
 
@@ -97,21 +101,13 @@ void PFProducer::produce(Event& iEvent,
  
   pfAlgo_.reconstructParticles( blocks );
 
-//   cout<<"particles reconstructed"<<endl;
 
-//   ostringstream  str;
-//   str<<pfAlgo_<<endl;
-//   cout<<"putting stuff in the logger"<<endl;
-//   try{ 
-//     LogInfo("PFProducer") <<str.str()<<endl;
-//   }
-//   catch( std::exception& err ) {
-//     cout<<err.what()<<endl;
-//     cout<<"BAD ALLOC"<<endl;
-//     cout<<str.str()<<endl;
-//   } 
-//   cout<<"done"<<endl;
-  
+  if(verbose_) {
+    ostringstream  str;
+    str<<pfAlgo_<<endl;
+    LogInfo("PFProducer") <<str.str()<<endl;
+  }  
+
   auto_ptr< reco::PFCandidateCollection > 
     pOutputCandidateCollection( pfAlgo_.transferCandidates() ); 
   
