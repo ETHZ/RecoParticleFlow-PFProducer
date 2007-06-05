@@ -12,6 +12,10 @@
 #include "DataFormats/ParticleFlowReco/interface/PFSimParticleFwd.h"
 #include "DataFormats/JetReco/interface/BasicJetfwd.h"
 #include "DataFormats/JetReco/interface/CaloJetfwd.h"
+#include "DataFormats/JetReco/interface/GenJetfwd.h"
+#include "DataFormats/JetReco/interface/GenJet.h"
+#include "SimDataFormats/HepMCProduct/interface/HepMCProduct.h"
+
 // #include <TH1F.h>
 
 class TH1F;
@@ -30,18 +34,31 @@ class TauBenchmarkAnalyzer : public edm::EDAnalyzer {
   //   virtual bool remove_leptonic_decay();
   //    virtual void makeJets();
   // ----------member data ---------------------------
-  unsigned int minTracks_;
+  bool enablegenjets_;
+  bool enablepfsimparticles_;
+  std::string jetcollection_;
   edm::Handle<reco::PFSimParticleCollection> trueParticles_;
   edm::Handle<reco::CaloJetCollection> caloJets_;
   edm::Handle<reco::BasicJetCollection> pfJets_;
-  
+  edm::Handle<reco::GenJetCollection> genJets_;
+  edm::Handle<edm::HepMCProduct> hepMC_; 
   bool testflag_;
   int testcounter_;
   int total_;
   int VERBOSE;
   int verbosity_;
-  TH1F* h_deltaETvisible_CMSSW_MCEHT_;
-  TH1F* h_deltaETvisible_CMSSW_MCPF_;
+  TH1F* h_deltaETvisible_MCPFSIM_EHT_;
+  TH1F* h_deltaETvisible_MCPFSIM_PF_;
+  TH1F* h_deltaETvisible_MCGENJET_EHT_;
+  TH1F* h_deltaETvisible_MCGENJET_PF_; 
+  TH1F* h_deltaETvisible_MCHEPMC_PF_;	                      
+  TH1F* h_deltaETvisible_MCHEPMC_EHT_;
+  TH1F* h_deltaETvisible_GENJET_PFSIM_;                   
+  TH1F* h_deltaETvisible_GENJET_HEPMC_;
+  // multiplicities
+  TH1F* h_genJetMatching_MCEHTnum_;
+  TH1F* h_genJetMatching_MCPFnum_; 
+  TH1F* h_genJetMatching_MCnum_;
 
   /// output root file
   TFile* file_;
