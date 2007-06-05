@@ -21,7 +21,7 @@ module iterativeCone5PFJets = IterativeConeJetProducer {
     double towerThreshold = 0.5       
     double coneRadius = 0.5
     InputTag src = particleFlowJetCandidates
-    untracked string jetType = "BasicJet" 
+    untracked string jetType = "PFJet" 
 }
 
 module Fastjet10PFJets = FastJetProducer {
@@ -30,6 +30,7 @@ module Fastjet10PFJets = FastJetProducer {
     double inputEMin = 0.
     double towerThreshold = 0.5  
     InputTag src = particleFlowJetCandidates
-    double FJ_ktRParam = 1.0
-    untracked string jetType = "BasicJet" 
+    double FJ_ktRParam = 1.0   
+    double PtMin =1
+    untracked string jetType = "PFJet"
 }
