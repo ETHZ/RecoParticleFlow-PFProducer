@@ -12,6 +12,7 @@
 #include "DataFormats/ParticleFlowReco/interface/PFSimParticleFwd.h"
 #include "DataFormats/JetReco/interface/BasicJetfwd.h"
 #include "DataFormats/JetReco/interface/CaloJetfwd.h"
+#include "DataFormats/JetReco/interface/PFJetfwd.h"
 // #include <TH1F.h>
 
 class TH1F;
@@ -33,7 +34,7 @@ class TauBenchmarkAnalyzer : public edm::EDAnalyzer {
   unsigned int minTracks_;
   edm::Handle<reco::PFSimParticleCollection> trueParticles_;
   edm::Handle<reco::CaloJetCollection> caloJets_;
-  edm::Handle<reco::BasicJetCollection> pfJets_;
+  edm::Handle<reco::PFJetCollection> pfJets_;
   
   bool testflag_;
   int testcounter_;

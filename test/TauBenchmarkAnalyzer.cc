@@ -17,16 +17,12 @@
 #include "DataFormats/ParticleFlowReco/interface/PFRecHit.h"
 #include "DataFormats/ParticleFlowReco/interface/PFRecHitFwd.h"
 #include "DataFormats/ParticleFlowReco/interface/PFRecHitFraction.h"
-#include "DataFormats/JetReco/interface/BasicJet.h"
+#include "DataFormats/JetReco/interface/PFJet.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 
 #include "DataFormats/ParticleFlowReco/interface/PFRecTrack.h"
 #include "DataFormats/ParticleFlowReco/interface/PFRecTrackFwd.h"
 #include "DataFormats/ParticleFlowReco/interface/PFSimParticle.h"
-// #include "RecoParticleFlow/PFClusterAlgo/interface/PFClusterAlgo.h"
-// #include "RecoParticleFlow/PFAlgo/interface/PFBlock.h"
-// #include "RecoParticleFlow/PFAlgo/interface/PFBlockElement.h"
-// #include "RecoParticleFlow/PFBlockAlgo/interface/PFGeometry.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "DataFormats/Math/interface/LorentzVectorFwd.h"
 #include "DataFormats/Math/interface/Vector3D.h"
@@ -122,7 +118,7 @@ void TauBenchmarkAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
   cout<<endl<<endl<<endl;
   //this is the event loop
   double total_et=0.0;
-  double total_et_calo=0.0;
+  //  double total_et_calo=0.0;
   trueParticles_.clear();
   caloJets_.clear();
   pfJets_.clear();
