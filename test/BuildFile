@@ -3,6 +3,9 @@
 <use name=FWCore/ParameterSet>
 <use name=DataFormats/ParticleFlowReco>
 <use name=DataFormats/ParticleFlowCandidate>
+<use name=RecoParticleFlow/PFAlgo>
+<use name=DataFormats/JetReco>
+<use name=DataFormats/HepMCCandidate>
 <use name=root>
 <flags SEAL_PLUGIN_NAME=testRecoParticleFlowPFProducer>
 <library file=*.cc name=testRecoParticleFlowPFProducer>
