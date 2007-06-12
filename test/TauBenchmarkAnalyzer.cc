@@ -193,7 +193,7 @@ void TauBenchmarkAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
 	// ====================================================================
 	//MAKING TRUE PARTICLES FROM PFSIMPARTICLES ===========================
 	// ====================================================================
-
+	
 	int jettrue_num=0;
 	double trueparticle_et=0.0;
 	if(enablepfsimparticles_==true)
@@ -230,47 +230,50 @@ void TauBenchmarkAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
 	    trueparticle_et=partTOTMC.Et();
 	
 	    LogInfo("Info")<<"total et PFSIMPARTICLE "<<trueparticle_et<<endl;
-	  }  
+	  }
+	
 	// ====================================================================
 	
 	//MAKING TRUE PARTICLES FROM HEPMC-PARTICLES ==========================
 	// ====================================================================
-	const HepMC::GenEvent * myGenEvent = hepMC_->GetEvent();
-	double hepmc_et =0.0; 
-	for (HepMC::GenEvent::particle_const_iterator p = myGenEvent->particles_begin();   p != myGenEvent->particles_end(); ++\
-	p )
-	{
-		if (abs((*p)->pdg_id()) == 15) {
-			// retrieve decay vertex
-			const HepMC::GenVertex * decayVtx = (*p)->end_vertex();
-			if ( decayVtx != 0 ) {
-				HepMC::GenVertex::particles_in_const_iterator child_mcpartItr  = decayVtx->particles_out_const_begin();
-				HepMC::GenVertex::particles_in_const_iterator child_mcpartItrE = decayVtx->particles_out_const_end();
-				
-				for (; child_mcpartItr != child_mcpartItrE; ++child_mcpartItr) {
-					
-					HepMC::GenParticle * child = (*child_mcpartItr);
-					if (std::abs(child->pdg_id())!=12 && std::abs(child->pdg_id())!=14 && std::abs(child->pdg_id())!=16 ){	
-						hepmc_et+=child->momentum().et();
-						LogInfo("Info")<< "pdgcode:"<< child->momentum().et()
-					<< endl;}
-				}//loop daughter
-			}//  decayVtx
-		}//if tau//
-	}
-	LogInfo("Info")<<"HepMC truth MC without neutrino " << hepmc_et<< endl; ;
-		
-	// ====================================================================
-	//MAKING TRUE GEN JETS============================================
-	// ====================================================================
-	
 	double JetGENETmax=0.0;
 	double jetgen_et=0.0;
 	int jetgen_num=0;
 	double neutrino_et=0.0;
-	//const HepMC::GenEvent * myGenEvent = hepMC_->GetEvent();
+	double hepmc_et =0.0; 
 	if(enablegenjets_==true)
 	  {
+	    const HepMC::GenEvent * myGenEvent = hepMC_->GetEvent();
+	  
+	    for (HepMC::GenEvent::particle_const_iterator p = myGenEvent->particles_begin();   p != myGenEvent->particles_end(); ++p )
+	      {
+		if (abs((*p)->pdg_id()) == 15) {
+		  // retrieve decay vertex
+		  const HepMC::GenVertex * decayVtx = (*p)->end_vertex();
+		  if ( decayVtx != 0 ) {
+		    HepMC::GenVertex::particles_in_const_iterator child_mcpartItr  = decayVtx->particles_out_const_begin();
+		    HepMC::GenVertex::particles_in_const_iterator child_mcpartItrE = decayVtx->particles_out_const_end();
+		    
+		    for (; child_mcpartItr != child_mcpartItrE; ++child_mcpartItr) {
+		      
+		      HepMC::GenParticle * child = (*child_mcpartItr);
+		      if (std::abs(child->pdg_id())!=12 && std::abs(child->pdg_id())!=14 && std::abs(child->pdg_id())!=16 ){	
+			hepmc_et+=child->momentum().et();
+			LogInfo("Info")<< "pdgcode:"<< child->momentum().et()
+				       << endl;}
+		    }//loop daughter
+		  }//  decayVtx
+		}//if tau//
+	      }
+	    LogInfo("Info")<<"HepMC truth MC without neutrino " << hepmc_et<< endl; 
+	    
+	    
+	    // ====================================================================
+	    //MAKING TRUE GEN JETS============================================
+	    // ====================================================================
+	    
+	 
+	    //const HepMC::GenEvent * myGenEvent = hepMC_->GetEvent();
 	    std::vector<const HepMC::GenParticle *> nu;
 	    for (HepMC::GenEvent::particle_const_iterator p = myGenEvent->particles_begin();   p != myGenEvent->particles_end(); ++p )
 	      {
@@ -301,8 +304,7 @@ void TauBenchmarkAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
 	    //jetgen_num=(*genJets_).size();
 	    LogInfo("Info")<<"total et jetgen_et: "<<JetGENETmax<<endl;
 	    //cout<<"number of particle gen: "<<jetgen_num<<endl;
-	  }
-	
+	  }//enablegenjets_
 	// ==================================================================
 	//CALO TOWER JETS (ECAL+HCAL Towers)=================================
 	// ==================================================================
@@ -370,6 +372,7 @@ void TauBenchmarkAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSet
 	h_genJetMatching_MCEHTnum_->Fill(jetcalo_num-jetgen_num);
 	h_genJetMatching_MCPFnum_->Fill(jetpf_num-jetgen_num);
 	h_genJetMatching_MCnum_->Fill(jettrue_num-jetgen_num);
+	
 }
 
 
