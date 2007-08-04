@@ -10,26 +10,27 @@ include "RecoParticleFlow/PFProducer/data/particleFlow.cfi"
 
 # jet reconstruction --------------------------------------------------
 
-#include "RecoJets/JetProducers/data/CaloJets.cfi"
-#include "RecoParticleFlow/PFProducer/data/particleFlowJetCandidates.cfi"
+include "RecoJets/Configuration/data/RecoJets.cff"
+include "RecoParticleFlow/PFProducer/data/particleFlowJetCandidates.cfi"
 
 
-#module iterativeCone5PFJets = IterativeConeJetProducer {
-#    using IconeJetParameters  
-#    double inputEtMin = 0.
-#    double inputEMin = 0.
-#    double towerThreshold = 0.5       
-#    double coneRadius = 0.5
-#    InputTag src = particleFlowJetCandidates
-#    untracked string jetType = "BasicJet" 
-#}
+module iterativeCone5PFJets = IterativeConeJetProducer {
+    using IconeJetParameters  
+    double inputEtMin = 0.
+    double inputEMin = 0.
+    double towerThreshold = 0.5       
+    double coneRadius = 0.5
+    InputTag src = particleFlowJetCandidates
+    untracked string jetType = "PFJet" 
+}
 
-#module Fastjet10PFJets = FastJetProducer {
-#    using FastjetParameters
-#    double inputEtMin = 0.
-#    double inputEMin = 0.
-#    double towerThreshold = 0.5  
-#    InputTag src = particleFlowJetCandidates
-#    double FJ_ktRParam = 1.0
-#    untracked string jetType = "BasicJet" 
-#}
+module Fastjet10PFJets = FastJetProducer {
+    using FastjetParameters
+    double inputEtMin = 0.
+    double inputEMin = 0.
+    double towerThreshold = 0.5  
+    InputTag src = particleFlowJetCandidates
+    double FJ_ktRParam = 1.0   
+    double PtMin =1
+    untracked string jetType = "PFJet"
+}
