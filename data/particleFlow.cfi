@@ -3,9 +3,9 @@ module particleFlow = PFProducer {
 
 
     # Tracking parameters
-    string Fitter      = "KFFittingSmoother"   
-    string Propagator  = "PropagatorWithMaterial" 
-    string TTRHBuilder = "WithTrackAngle"
+    #string Fitter      = "KFFittingSmoother"   
+    #string Propagator  = "PropagatorWithMaterial" 
+    #string TTRHBuilder = "WithTrackAngle"
 
     # input collections ----------------------------------------
 
@@ -24,13 +24,13 @@ module particleFlow = PFProducer {
     
     # number of sigma for creating neutral particles
     double  pf_nsigma_ECAL = 3
-    double  pf_nsigma_HCAL = 3
+    double  pf_nsigma_HCAL = 1
 
     # ECAL calibration parameters. 
     # E_calib =  pf_ECAL_calib_p0 + E_raw * pf_ECAL_calib_p1
     # include "RecoParticleFlow/PFClusterTools/data/CalibrationParametersECAL.cff"
-    double  pf_ECAL_calib_p0 = 0.11 
-    double  pf_ECAL_calib_p1 = 1.07
+    double  pf_ECAL_calib_p0 = 0 
+    double  pf_ECAL_calib_p1 = 1
 
     double  pf_mergedPhotons_mvaCut = 0.5
     string  pf_mergedPhotons_mvaWeightFile = "RecoParticleFlow/PFProducer/data/MVAnalysis_MLP.weights.txt"
