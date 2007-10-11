@@ -31,5 +31,9 @@ module particleFlow = PFProducer {
     # include "RecoParticleFlow/PFClusterTools/data/CalibrationParametersECAL.cff"
     double  pf_ECAL_calib_p0 = 0.11 
     double  pf_ECAL_calib_p1 = 1.07
+
+    double  pf_mergedPhotons_mvaCut = 0.5
+    string  pf_mergedPhotons_mvaWeightFile = "RecoParticleFlow/PFProducer/data/MVAnalysis_MLP.weights.txt"
+    
 }
 
