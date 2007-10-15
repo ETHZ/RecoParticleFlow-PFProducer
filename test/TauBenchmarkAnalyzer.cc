@@ -19,7 +19,6 @@
 #include "DataFormats/JetReco/interface/BasicJet.h"
 #include "DataFormats/JetReco/interface/CaloJet.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleCandidate.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticleCandidateFwd.h"
 
 #include "DataFormats/ParticleFlowReco/interface/PFRecTrack.h"
 #include "DataFormats/ParticleFlowReco/interface/PFRecTrackFwd.h"
