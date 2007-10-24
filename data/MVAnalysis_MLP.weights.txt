@@ -1,0 +1,79 @@
+#GEN -*-*-*-*-*-*-*-*-*-*-*- general info -*-*-*-*-*-*-*-*-*-*-*-
+
+Method : MLP
+Creator: cbern
+Date   : Wed Sep 19 14:32:24 2007
+Host   : Linux pcmsw46.cern.ch 2.6.18-1.2849_1.fc6.cubbi_suspend2 #1 SMP Mon Nov 13 11:02:05 EST 2006 i686 i686 i386 GNU/Linux
+Dir    : /home/cbern/CMS/TMVA
+Training events: 2000
+
+
+#OPT -*-*-*-*-*-*-*-*-*-*-*-*- options -*-*-*-*-*-*-*-*-*-*-*-*-
+
+# Set by User:
+V: False [verbose flag]
+NCycles: 200 [Number of training cycles]
+HiddenLayers: "N+1,N" [Specification of the hidden layers]
+TestRate: 5 [Test for overtraining performed at each #th epochs]
+# Default:
+D: False [use-decorrelated-variables flag (for backward compatibility)]
+Preprocess: "None" [Variable Decorrelation Method]
+PreprocessType: "Signal" [Use signal or background for Preprocess]
+H: False [help flag]
+Normalize: True [Normalize input variables]
+NeuronType: "sigmoid" [Neuron activation function type]
+NeuronInputType: "sum" [Neuron input function type]
+TrainingMethod: "BP" [Train with Back-Propagation (BP) or Genetic Algorithm (GA) (takes a LONG time)]
+LearningRate: 0.02 [NN learning rate parameter]
+DecayRate: 0.01 [Decay rate for learning parameter]
+BPMode: "sequential" [Back-propagation learning mode: sequential or batch]
+BatchSize: -1 [Batch size: number of events/batch, only set if in Batch Mode, -1 for BatchSize=number_of_events]
+##
+
+
+#VAR -*-*-*-*-*-*-*-*-*-*-*-* variables *-*-*-*-*-*-*-*-*-*-*-*-
+
+NVar 3
+                  eECAL/pTrack                eECAL_D_pTrack    'F'    [0.00297716,5.57195]
+                      chi2ECAL                      chi2ECAL    'F'    [0.00071052,49.9922]
+                       ptTrack                       ptTrack    'F'    [1.19972,224.227]
+
+
+#WGT -*-*-*-*-*-*-*-*-*-*-*-*- weights -*-*-*-*-*-*-*-*-*-*-*-*-
+
+Weights
+(layer0,neuron0)-(layer1,neuron0): 3.41468
+(layer0,neuron0)-(layer1,neuron1): 4.06707
+(layer0,neuron0)-(layer1,neuron2): 0.977804
+(layer0,neuron0)-(layer1,neuron3): 0.781785
+(layer0,neuron1)-(layer1,neuron0): 1.21585
+(layer0,neuron1)-(layer1,neuron1): 0.762225
+(layer0,neuron1)-(layer1,neuron2): -1.41583
+(layer0,neuron1)-(layer1,neuron3): 1.18808
+(layer0,neuron2)-(layer1,neuron0): 1.69654
+(layer0,neuron2)-(layer1,neuron1): 1.43885
+(layer0,neuron2)-(layer1,neuron2): -0.602632
+(layer0,neuron2)-(layer1,neuron3): -1.35783
+(layer0,neuron3)-(layer1,neuron0): 2.48269
+(layer0,neuron3)-(layer1,neuron1): 2.51145
+(layer0,neuron3)-(layer1,neuron2): -0.915172
+(layer0,neuron3)-(layer1,neuron3): 1.88767
+(layer1,neuron0)-(layer2,neuron0): 3.03507
+(layer1,neuron0)-(layer2,neuron1): 0.583081
+(layer1,neuron0)-(layer2,neuron2): -0.098933
+(layer1,neuron1)-(layer2,neuron0): 3.88477
+(layer1,neuron1)-(layer2,neuron1): 1.40102
+(layer1,neuron1)-(layer2,neuron2): 1.64582
+(layer1,neuron2)-(layer2,neuron0): 2.30704
+(layer1,neuron2)-(layer2,neuron1): -0.841536
+(layer1,neuron2)-(layer2,neuron2): -1.28704
+(layer1,neuron3)-(layer2,neuron0): 0.966986
+(layer1,neuron3)-(layer2,neuron1): 0.00223062
+(layer1,neuron3)-(layer2,neuron2): -1.59379
+(layer1,neuron4)-(layer2,neuron0): -1.88828
+(layer1,neuron4)-(layer2,neuron1): 2.12644
+(layer1,neuron4)-(layer2,neuron2): 1.10617
+(layer2,neuron0)-(layer3,neuron0): 2.69837
+(layer2,neuron1)-(layer3,neuron0): 0.751617
+(layer2,neuron2)-(layer3,neuron0): -0.455939
+(layer2,neuron3)-(layer3,neuron0): -2.06181
