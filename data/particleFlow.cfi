@@ -24,7 +24,7 @@ module particleFlow = PFProducer {
     
     # number of sigma for creating neutral particles
     double  pf_nsigma_ECAL = 3
-    double  pf_nsigma_HCAL = 1
+    double  pf_nsigma_HCAL = 1.7
 
     # ECAL calibration parameters. 
     # E_calib =  pf_ECAL_calib_p0 + E_raw * pf_ECAL_calib_p1
