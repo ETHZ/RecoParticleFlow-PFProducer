@@ -26,11 +26,17 @@ module particleFlow = PFProducer {
     double  pf_nsigma_ECAL = 3
     double  pf_nsigma_HCAL = 1.7
 
-    # ECAL calibration parameters. 
-    # E_calib =  pf_ECAL_calib_p0 + E_raw * pf_ECAL_calib_p1
-    # include "RecoParticleFlow/PFClusterTools/data/CalibrationParametersECAL.cff"
-    double  pf_ECAL_calib_p0 = 0 
-    double  pf_ECAL_calib_p1 = 1
+    double pf_calib_ECAL_slope = 1
+    double pf_calib_ECAL_offset = 0
+  
+    double pf_calib_ECAL_HCAL_eslope = 1.05 
+    double pf_calib_ECAL_HCAL_hslope = 1.06
+    double pf_calib_ECAL_HCAL_offset = 6.11
+    
+    double pf_calib_HCAL_slope = 2.17
+    double pf_calib_HCAL_offset = 1.73
+    double pf_calib_HCAL_damping = 2.49
+  
 
     #Alogrithm to recover the HCAL clusters (produced
     #by nuclear interactions) that belong to charged hadrons
