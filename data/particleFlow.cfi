@@ -9,11 +9,8 @@ module particleFlow = PFProducer {
 
     # input collections ----------------------------------------
 
-    # module label to find input rec tracks 
-    untracked string BlocksModuleLabel = "particleFlowBlock"
 
-    # instance name to find ecal PFClusters
-    untracked string  BlocksInstanceName = ""
+    InputTag  blocks = particleFlowBlock
 
     # verbosity 
     untracked bool   verbose            = false
