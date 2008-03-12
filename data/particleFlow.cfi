@@ -12,11 +12,17 @@ module particleFlow = PFProducer {
 
     InputTag  blocks = particleFlowBlock
 
+    
+    # debugging         ----------------------------------------
+
     # verbosity 
     untracked bool   verbose            = false
 
     # debugging
     untracked bool   debug              = false
+
+    # algo type (0: main, 1:electrons, other not yet implemented)
+    uint32           algoType = 0 
 
    # particle flow parameters ---------------------------------
 
