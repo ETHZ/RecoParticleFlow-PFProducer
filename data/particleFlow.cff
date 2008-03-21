@@ -5,32 +5,7 @@ include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 # note that tracking is redone since we need updated hits and they 
 # are not stored in the event!
 include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
-
 include "RecoParticleFlow/PFProducer/data/particleFlow.cfi"
 
 # jet reconstruction --------------------------------------------------
 
-include "RecoJets/Configuration/data/RecoJets.cff"
-include "RecoParticleFlow/PFProducer/data/particleFlowJetCandidates.cfi"
-
-
-module iterativeCone5PFJets = IterativeConeJetProducer {
-    using IconeJetParameters  
-    double inputEtMin = 0.
-    double inputEMin = 0.
-    double towerThreshold = 0.5       
-    double coneRadius = 0.5
-    InputTag src = particleFlowJetCandidates
-    untracked string jetType = "PFJet" 
-}
-
-module Fastjet10PFJets = FastJetProducer {
-    using FastjetParameters
-    double inputEtMin = 0.
-    double inputEMin = 0.
-    double towerThreshold = 0.5  
-    InputTag src = particleFlowJetCandidates
-    double FJ_ktRParam = 1.0   
-    double PtMin =1
-    untracked string jetType = "PFJet"
-}
