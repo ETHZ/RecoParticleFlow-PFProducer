@@ -7,5 +7,3 @@ include "Geometry/CaloEventSetup/data/CaloGeometry.cfi"
 include "RecoTracker/TrackProducer/data/CTFFinalFitWithMaterial.cff"
 include "RecoParticleFlow/PFProducer/data/particleFlow.cfi"
 
-# jet reconstruction --------------------------------------------------
-
