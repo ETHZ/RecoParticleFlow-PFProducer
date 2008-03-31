@@ -1,9 +1,0 @@
-
-module particleFlowJetCandidates = PFJetCandidateCreator{
-  InputTag src = particleFlow
-  untracked bool verbose = 1
-}
-
-
-
-
