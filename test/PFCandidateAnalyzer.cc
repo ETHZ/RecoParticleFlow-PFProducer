@@ -76,14 +76,14 @@ PFCandidateAnalyzer::fetchCandidateCollection(Handle<reco::PFCandidateCollection
 				      const InputTag& tag, 
 				      const Event& iEvent) const {
   
-  bool found = iEvent.getByLabel(tag, c);
-  
-  if(!found ) {
+  try{ 
+    iEvent.getByLabel(tag, c);
+  }
+  catch (cms::Exception& err) {
     ostringstream  err;
-    err<<" cannot get PFCandidates: "
-       <<tag<<endl;
-    LogError("PFCandidates")<<err.str();
-    throw cms::Exception( "MissingProduct", err.str());
+
+    LogError("PFCandidates")<<err;
+    throw;
   }
   
 }
