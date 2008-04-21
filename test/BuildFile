@@ -1,5 +1,0 @@
-<use name=DataFormats/ParticleFlowCandidate>
-<use name=FWCore/Framework>
-<library file=PFCandidateAnalyzer.cc>
-<flags EDM_PLUGIN=1>
-</library>
