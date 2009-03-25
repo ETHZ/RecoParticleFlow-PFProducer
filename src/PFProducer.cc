@@ -135,15 +135,18 @@ PFProducer::PFProducer(const edm::ParameterSet& iConfig) {
     = iConfig.getParameter<double>("final_chi2cut_bremps");
   
 
-  double mvaEleCut
-    = iConfig.getParameter<double>("pf_electron_mvaCut");
-
-  string mvaWeightFileEleID
-    = iConfig.getParameter<string>("pf_electronID_mvaWeightFile");
-
+  double mvaEleCut = -99999;
+  string mvaWeightFileEleID;
+  
   string path_mvaWeightFileEleID;
   if(usePFElectrons_)
-    {
+    {  
+      mvaEleCut
+	= iConfig.getParameter<double>("pf_electron_mvaCut");
+      
+      mvaWeightFileEleID
+	= iConfig.getParameter<string>("pf_electronID_mvaWeightFile");
+      
       path_mvaWeightFileEleID = edm::FileInPath ( mvaWeightFileEleID.c_str() ).fullPath();
     }
 
