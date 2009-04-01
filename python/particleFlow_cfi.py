@@ -13,7 +13,7 @@ particleFlow = cms.EDProducer("PFProducer",
     debug = cms.untracked.bool(False),
 
     # Use electron identification in PFAlgo
-    usePFElectrons = cms.bool(True),
+    usePFElectrons = cms.bool(False),
     pf_electron_output_col=cms.string('electrons'),
     pf_electronID_mvaWeightFile = cms.string('RecoParticleFlow/PFProducer/data/MVAnalysis_BDT.weights_PfElectrons23Jan.txt'),
                               
