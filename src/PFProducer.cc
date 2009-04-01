@@ -78,7 +78,7 @@ PFProducer::PFProducer(const edm::ParameterSet& iConfig) {
 
   //Done with PFClusterCalibration //
 
-  hfCalibFactor = iConfig.getParameter<double>("HFCalibFactor");
+  double hfCalibFactor = iConfig.getParameter<double>("HFCalibFactor");
   
   inputTagBlocks_ 
     = iConfig.getParameter<InputTag>("blocks");
