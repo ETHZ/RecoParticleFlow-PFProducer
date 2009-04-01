@@ -64,7 +64,8 @@ particleFlow = cms.EDProducer("PFProducer",
     pfcluster_allowNegative     = cms.uint32(0),
     pfcluster_doEtaCorrection = cms.uint32(1),
     pfcluster_barrelEndcapEtaDiv = cms.double(1.4),
-
+    # 1/0.7
+    hfCalibFactor =  cms.double(1.429),
     #Use hand fitted parameters specified below
     #P1 adjusts the height of the peak
     ecalHcalEcalBarrel = cms.vdouble(0.67,    3.0,    1.15,    0.90,  -0.060,    1.4),

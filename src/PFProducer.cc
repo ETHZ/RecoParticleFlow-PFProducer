@@ -78,6 +78,8 @@ PFProducer::PFProducer(const edm::ParameterSet& iConfig) {
 
   //Done with PFClusterCalibration //
 
+  hfCalibFactor = iConfig.getParameter<double>("HFCalibFactor");
+  
   inputTagBlocks_ 
     = iConfig.getParameter<InputTag>("blocks");
 
@@ -206,7 +208,8 @@ PFProducer::PFProducer(const edm::ParameterSet& iConfig) {
 			      usePFElectrons_);
 
   pfAlgo_->setPFConversionParameters(usePFConversions);
-
+  
+  pfAlgo_->setHFCalibFactor( hfCalibFactor );
   
   verbose_ = 
     iConfig.getUntrackedParameter<bool>("verbose",false);
