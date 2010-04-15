@@ -647,11 +647,12 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
 	unsigned nHits =  elements[iTrack].trackRef()->hitPattern().trackerLayersWithMeasurement();
 	unsigned int NLostHit = trackRef->hitPattern().trackerLayersWithoutMeasurement();
 
-	std::cout << "A track (algo = " << trackRef->algo() << ") with momentum " << trackMomentum 
-		  << " / " << elements[iTrack].trackRef()->pt() << " +/- " << DPt 
-		  << " / " << elements[iTrack].trackRef()->eta() 
-		  << " without any link to ECAL/HCAL and with " << nHits << " (" << NLostHit 
-		  << ") hits (lost hits) has been cleaned" << std::endl;
+	if ( debug_ ) 
+	  std::cout << "A track (algo = " << trackRef->algo() << ") with momentum " << trackMomentum 
+		    << " / " << elements[iTrack].trackRef()->pt() << " +/- " << DPt 
+		    << " / " << elements[iTrack].trackRef()->eta() 
+		    << " without any link to ECAL/HCAL and with " << nHits << " (" << NLostHit 
+		    << ") hits (lost hits) has been cleaned" << std::endl;
 	active[iTrack] = false;
 	continue;
       }
@@ -1242,6 +1243,7 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
       // Create a PF Candidate right away if the track is a tight muon
       reco::MuonRef muonRef = elements[iTrack].muonRef();
       bool thisIsAMuon = PFMuonAlgo::isMuon(elements[iTrack]);
+      bool thisIsAnIsolatedMuon = PFMuonAlgo::isIsolatedMuon(elements[iTrack]);
       bool thisIsALooseMuon = false;
 
       if(!thisIsAMuon ) {
@@ -1252,29 +1254,50 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
 	  std::cout << "\t\tThis track is identified as a muon - remove it from the stack" << std::endl;
 	  std::cout << "\t\t" << elements[iTrack] << std::endl;
 	}
-	// Estimate of the energy deposit & resolution in the calorimeters
-	muonHCALEnergy += muonHCAL_[0];
-	muonHCALError += muonHCAL_[1]*muonHCAL_[1];
-	muonECALEnergy += muonECAL_[0];
-	muonECALError += muonECAL_[1]*muonECAL_[1];
-	// ... as well as the equivalent "momentum" at ECAL entrance
-	photonAtECAL -= muonECAL_[0]*chargedDirection;
-	hadronAtECAL -= muonHCAL_[0]*chargedDirection;
+
 	// Create a muon.
 	unsigned tmpi = reconstructTrack( elements[iTrack] );
 	(*pfCandidates_)[tmpi].addElementInBlock( blockref, iTrack );
 	(*pfCandidates_)[tmpi].addElementInBlock( blockref, iHcal );
 	double muonHcal = std::min(muonHCAL_[0]+muonHCAL_[1],totalHcal);
+	// if muon is isolated, take the whole Hcal energy
+	if(thisIsAnIsolatedMuon) muonHcal = totalHcal;
+	double muonEcal =0.;
+	unsigned iEcal = 0;
 	if( !sortedEcals.empty() ) { 
-	  unsigned iEcal = sortedEcals.begin()->second; 
+	  iEcal = sortedEcals.begin()->second; 
 	  PFClusterRef eclusterref = elements[iEcal].clusterRef();
 	  (*pfCandidates_)[tmpi].addElementInBlock( blockref, iEcal);
-	  double muonEcal = std::min(muonECAL_[0]+muonECAL_[1],eclusterref->energy());
+	  muonEcal = std::min(muonECAL_[0]+muonECAL_[1],eclusterref->energy());
+	  if(thisIsAnIsolatedMuon) muonEcal = eclusterref->energy();
+	  // If the muon expected energy accounts for the whole ecal cluster energy, lock the ecal cluster
+	  if ( eclusterref->energy() - muonEcal  < 0.2 ) active[iEcal] = false;
 	  (*pfCandidates_)[tmpi].setEcalEnergy(muonEcal);
 	  (*pfCandidates_)[tmpi].setRawEcalEnergy(eclusterref->energy());
 	} 
 	(*pfCandidates_)[tmpi].setHcalEnergy(muonHcal);
 	(*pfCandidates_)[tmpi].setRawHcalEnergy(totalHcal);
+
+	if(thisIsAnIsolatedMuon){
+	  muonHCALEnergy += totalHcal;
+	  muonHCALError += 0.;
+	  muonECALEnergy += muonEcal;
+	  muonECALError += 0.;
+	  photonAtECAL -= muonEcal*chargedDirection;
+	  hadronAtECAL -= totalHcal*chargedDirection;
+	  active[iEcal] = false;
+	  active[iHcal] = false;	}
+	else{
+	// Estimate of the energy deposit & resolution in the calorimeters
+	  muonHCALEnergy += muonHCAL_[0];
+	  muonHCALError += muonHCAL_[1]*muonHCAL_[1];
+	  muonECALEnergy += muonECAL_[0];
+	  muonECALError += muonECAL_[1]*muonECAL_[1];
+	  // ... as well as the equivalent "momentum" at ECAL entrance
+	  photonAtECAL -= muonECAL_[0]*chargedDirection;
+	  hadronAtECAL -= muonHCAL_[0]*chargedDirection;
+	}
+
 	// Remove it from the stack
 	active[iTrack] = false;
 	// Go to next track
@@ -1603,7 +1626,7 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
 	      std::cout << "\tElement  " << elements[iTrack] << std::endl 
 			<< "PFAlgo: particle type set to muon (global, loose)" <<"muon pT "<<elements[it->second.first].muonRef()->pt()<<std::endl; 
 	      PFMuonAlgo::printMuonProperties(elements[it->second.first].muonRef());
-	    }
+	      }
 	  }
 	  else{
 	    if (debug_){
@@ -1878,7 +1901,8 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
       //case 2: caloEnergy > totalChargedMomentum + nsigma*TotalError
       //there is an excess of energy in the calos
       //create a neutral hadron or a photon
-        
+
+      /*        
       //If it's isolated don't create neutrals since the energy deposit is always coming from a showering muon
       bool thisIsAnIsolatedMuon = false;
       for(IE ie = sortedTracks.begin(); ie != sortedTracks.end(); ++ie ) {
@@ -1890,7 +1914,7 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
 	if(debug_)cout<<" Not looking for neutral b/c this is an isolated muon "<<endl;
 	break;
       }
-
+      */
       double eNeutralHadron = caloEnergy - totalChargedMomentum;
       double ePhoton = (caloEnergy - totalChargedMomentum) / slopeEcal;
 
@@ -2440,22 +2464,27 @@ unsigned PFAlgo::reconstructTrack( const reco::PFBlockElement& elt ) {
   //isFromNucl = false;
 
   if ( thisIsAMuon ) { 
-    //For Isolated muons, take the track pt if it's a tracker mu, and if not take the global, but never the stand-alone
-    if(thisIsAnIsolatedMuon){
-      if(!muonRef->isTrackerMuon()){
-	reco::TrackRef combinedMu = muonRef->combinedMuon();
-	px = combinedMu->px();
-	py = combinedMu->py();
-	pz = combinedMu->pz();
-	energy = sqrt(combinedMu->p()*combinedMu->p() + 0.1057*0.1057); 
+    
+    // assume that track pT is taken, may be overwritten below
+    energy = sqrt(track.p()*track.p() + 0.1057*0.1057);
+    
+    if(thisIsAGlobalTightMuon||thisIsAnIsolatedMuon){    
+
+      // If the global muon above 10 GeV and is a tracker muon take the global pT
+      // If it's not a tracker muon, choose between the global pT and the STA pT
+      // expcept if it's isolated, then never take the STA
+
+      if(muonRef->isTrackerMuon()){
+	if(sqrt(px*px+py*py) > 10){
+	  reco::TrackRef combinedMu = muonRef->combinedMuon(); 
+	  px = combinedMu->px();
+	  py = combinedMu->py();
+	  pz = combinedMu->pz();
+	  energy = sqrt(combinedMu->p()*combinedMu->p() + 0.1057*0.1057);   
+	}
       }
-      else{
-	energy = sqrt(track.p()*track.p() + 0.1057*0.1057);
-      }       
-    }
-    else if(thisIsAGlobalTightMuon){    
-      if(sqrt(px*px+py*py) > 10){
-	reco::TrackRef combinedMu = muonRef->isTrackerMuon() || 
+      else{  
+	reco::TrackRef combinedMu = thisIsAnIsolatedMuon ||
 	  muonRef->combinedMuon()->normalizedChi2() < muonRef->standAloneMuon()->normalizedChi2() ?
 	  muonRef->combinedMuon() : 
 	  muonRef->standAloneMuon() ;
@@ -2464,12 +2493,6 @@ unsigned PFAlgo::reconstructTrack( const reco::PFBlockElement& elt ) {
 	pz = combinedMu->pz();
 	energy = sqrt(combinedMu->p()*combinedMu->p() + 0.1057*0.1057);   
       }
-      else{
-	energy = sqrt(track.p()*track.p() + 0.1057*0.1057);
-      }      
-    }
-    else{
-      energy = sqrt(track.p()*track.p() + 0.1057*0.1057);
     }
   } else if (isFromDisp) {
     if (debug_) cout << "Not refitted px = " << px << " py = " << py << " pz = " << pz << " energy = " << energy << endl; 
