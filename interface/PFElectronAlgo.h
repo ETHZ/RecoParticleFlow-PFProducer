@@ -91,6 +91,14 @@ class PFElectronAlgo {
 		 AssMap& associatedToEcal_,
 		 std::vector<bool>& active);
   
+  void  SetMapsForEG(const reco::PFBlockRef&  blockRef,
+		     unsigned int gsfIndex,
+		     const std::vector<unsigned int>& ecalIs,
+		     std::vector<bool>& localactive,
+		     AssMap& associatedToGsf_,
+		     AssMap& associatedToBrems_,
+		     AssMap& associatedToEcal_);
+
   std::vector<reco::PFCandidate> elCandidate_;
   std::vector<reco::PFCandidate> allElCandidate_;
   std::map<unsigned int,std::vector<reco::PFCandidate> > electronConstituents_;
@@ -136,6 +144,7 @@ class PFElectronAlgo {
 
   bool isvalid_;
 
+  std::vector<unsigned int> gsfIsEG_;
   const std::vector<reco::GsfElectron> * theGsfElectrons_;
 };
 #endif
