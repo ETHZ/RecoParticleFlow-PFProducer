@@ -28,7 +28,7 @@
   <use   name="TrackingTools/TrajectoryState"/>
   <flags   EDM_PLUGIN="1"/>
 </library>
-<library   name="RecoParticleFlowPFProducerPlugins" file="EFilter.cc,PFBlockProducer.cc,PFElectronTranslator.cc,PFProducer.cc, SealModule.cc">
+<library   name="RecoParticleFlowPFProducerPlugins" file="EFilter.cc,PFBlockProducer.cc,PFElectronTranslator.cc,PFProducer.cc, SealModule.cc RecoMuonFromPFProducer.cc">
   <use   name="DataFormats/CaloRecHit"/>
   <use   name="DataFormats/Common"/>
   <use   name="DataFormats/EgammaReco"/>
