@@ -14,12 +14,19 @@ process.source = cms.Source("PoolSource",
 )
 
 
+# load the module which reads the collection of PFCandidates, and
+# creates a reco::Muon for each PFCandidate of type muon
 process.load("RecoParticleFlow.PFProducer.recoMuonFromPFProducer_cfi")
+
+# put it in the path
 process.p = cms.Path(process.recoMuonFromPFProducer)
 
 process.load("FastSimulation.Configuration.EventContent_cff")
 process.out = cms.OutputModule("PoolOutputModule",
-    outputCommands = cms.untracked.vstring('keep recoMuons_*_*_*'),
+# don't forget to keep all collections of recoMuons in the event.
+# no need to keep the recoPFCandidates for a muon analysis
+    outputCommands = cms.untracked.vstring('keep recoMuons_*_*_*',
+                                           'keep recoPFCandidates_particleFlow_*_*'),
     fileName = cms.untracked.string('muonsFromPF.root')
 )
 
