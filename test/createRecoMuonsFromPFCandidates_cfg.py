@@ -20,7 +20,7 @@ process.p = cms.Path(process.recoMuonFromPFProducer)
 process.load("FastSimulation.Configuration.EventContent_cff")
 process.out = cms.OutputModule("PoolOutputModule",
     outputCommands = cms.untracked.vstring('keep recoMuons_*_*_*'),
-    fileName = cms.untracked.string('aod.root')
+    fileName = cms.untracked.string('muonsFromPF.root')
 )
 
 process.outpath = cms.EndPath(process.out )

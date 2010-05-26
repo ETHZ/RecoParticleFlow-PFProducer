@@ -59,7 +59,7 @@ RecoMuonFromPFProducer::produce(Event& iEvent,
 
     const reco::PFCandidate& cand = *ip;
     if( cand.particleId() == reco::PFCandidate::mu) {
-      if( cand.muonRef().isAvailable() ) {
+      if( !cand.muonRef().isAvailable() ) {
 	cout<<cand.muonRef().id()<<endl;
 	LogError("RecoMuonFromPFProducer")<<"reference to reco::Muon not available for muon PFCandidate "<<cand<<endl;
 	
