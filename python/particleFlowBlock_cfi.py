@@ -40,10 +40,14 @@ particleFlowBlock = cms.EDProducer("PFBlockProducer",
     # input muons
     RecMuons = cms.InputTag("muons"),
 
+    # input selected SuperClusters (i.e. photon candidates)
+    EGSuperClusters = cms.VInputTag(cms.InputTag("hybridSuperClusters"),
+                                    cms.InputTag("multi5x5SuperClustersWithPreshower")),                                   
+
     # input conversions
     PFConversions = cms.InputTag("pfConversions"),
     useConversions = cms.bool(False),
-
+                                   
     # input V0
     PFV0 = cms.InputTag("pfV0"),
     useV0 = cms.bool(False),

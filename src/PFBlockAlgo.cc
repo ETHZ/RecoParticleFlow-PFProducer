@@ -6,7 +6,8 @@
 #include "DataFormats/ParticleFlowReco/interface/PFDisplacedVertex.h" // gouzevitch
 
 #include "DataFormats/ParticleFlowReco/interface/PFRecHit.h"
-
+#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
+#include "DataFormats/EgammaReco/interface/SuperCluster.h"
 #include <stdexcept>
 #include "TMath.h"
 
@@ -886,13 +887,17 @@ PFBlockAlgo::checkMaskSize( const reco::PFRecTrackCollection& tracks,
 			    const reco::PFClusterCollection&  hfems,
 			    const reco::PFClusterCollection&  hfhads,
 			    const reco::PFClusterCollection&  pss, 
+			    const reco::SuperClusterCollection&  scb, 
+			    const reco::SuperClusterCollection&  sce, 
 			    const Mask& trackMask, 
 			    const Mask& gsftrackMask,  
 			    const Mask& ecalMask,
 			    const Mask& hcalMask, 
 			    const Mask& hfemMask,
 			    const Mask& hfhadMask,		      
-			    const Mask& psMask ) const {
+			    const Mask& psMask,
+			    const Mask& scbMask,
+			    const Mask& sceMask) const {
 
   if( !trackMask.empty() && 
       trackMask.size() != tracks.size() ) {
@@ -950,6 +955,21 @@ PFBlockAlgo::checkMaskSize( const reco::PFRecTrackCollection& tracks,
     throw std::length_error( err.c_str() );
   }
   
+  if( !scbMask.empty() && 
+      scbMask.size() != scb.size() ) {
+    string err = "PFBlockAlgo::setInput: ";
+    err += "The size of the SC-barrel mask is different ";
+    err += "from the size of the SuperCluster vector.";
+    throw std::length_error( err.c_str() );
+  }
+  if( !sceMask.empty() && 
+      sceMask.size() != sce.size() ) {
+    string err = "PFBlockAlgo::setInput: ";
+    err += "The size of the SC-endcap mask is different ";
+    err += "from the size of the SuperCluster vector.";
+    throw std::length_error( err.c_str() );
+  }
+
 }
 
 

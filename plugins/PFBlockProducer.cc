@@ -12,6 +12,7 @@
 #include "DataFormats/ParticleFlowReco/interface/PFConversion.h"
 #include "DataFormats/ParticleFlowReco/interface/PFV0Fwd.h"
 #include "DataFormats/ParticleFlowReco/interface/PFV0.h"
+#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
 
 #include "DataFormats/ParticleFlowReco/interface/PFBlock.h"
 #include "DataFormats/ParticleFlowReco/interface/PFBlockFwd.h"
@@ -41,8 +42,11 @@ PFBlockProducer::PFBlockProducer(const edm::ParameterSet& iConfig) {
   inputTagGsfRecTracks_ 
     = iConfig.getParameter<InputTag>("GsfRecTracks");
 
-    inputTagConvBremGsfRecTracks_ 
+  inputTagConvBremGsfRecTracks_ 
     = iConfig.getParameter<InputTag>("ConvBremGsfRecTracks");
+
+  inputTagEGSuperClusters_
+    = iConfig.getParameter<std::vector<InputTag> >("EGSuperClusters");
 
   inputTagRecMuons_ 
     = iConfig.getParameter<InputTag>("RecMuons");
@@ -267,7 +271,19 @@ PFBlockProducer::produce(Event& iEvent,
   if(!found )
     LogError("PFBlockProducer")<<" cannot get PS clusters: "
 			       <<inputTagPFClustersPS_<<endl;
-    
+  
+  std::vector<Handle< reco::SuperClusterCollection > > vEGSuperClusters;
+  for(unsigned isccoll=0; isccoll<inputTagEGSuperClusters_.size();++isccoll) {
+
+    Handle< reco::SuperClusterCollection > EGSuperClusters;
+    found = iEvent.getByLabel(inputTagEGSuperClusters_[isccoll],
+			      EGSuperClusters);
+    if(found )
+      vEGSuperClusters.push_back(EGSuperClusters);
+    else
+      LogError("PFBlockProducer")<<" cannot get selected EG superclusters: "
+				 <<inputTagEGSuperClusters_[isccoll]<<endl;
+  }
   if( usePFatHLT_  ) {
      pfBlockAlgo_.setInput( recTracks, 			   
 			   clustersECAL,
@@ -287,7 +303,10 @@ PFBlockProducer::produce(Event& iEvent,
 			   clustersHCAL,
 			   clustersHFEM,
 			   clustersHFHAD,
-			   clustersPS );
+			   clustersPS,
+			   vEGSuperClusters[0],
+			   vEGSuperClusters[1]
+			   );
   }
   pfBlockAlgo_.findBlocks();
   
