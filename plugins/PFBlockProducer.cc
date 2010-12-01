@@ -95,6 +95,8 @@ PFBlockProducer::PFBlockProducer(const edm::ParameterSet& iConfig) {
 
   useV0_ = iConfig.getParameter<bool>("useV0");
 
+  useEGSC_ = iConfig.getParameter<bool>("useEGSuperClusters");
+
   produces<reco::PFBlockCollection>();
   
 
@@ -273,17 +275,28 @@ PFBlockProducer::produce(Event& iEvent,
 			       <<inputTagPFClustersPS_<<endl;
   
   std::vector<Handle< reco::SuperClusterCollection > > vEGSuperClusters;
-  for(unsigned isccoll=0; isccoll<inputTagEGSuperClusters_.size();++isccoll) {
-
+  
+  if(useEGSC_ && inputTagEGSuperClusters_.size()!=2)
+    {
+      LogError("PFBlockProducer")<< "Trying to use SuperCluster collections, but there are " 
+				 <<  inputTagEGSuperClusters_.size() << " InputTags given "
+				 <<  " instead of 2. Disabling the reading " << std::endl;
+      useEGSC_ = false;
+    }
+  // whatever happens, the EGSuperClusters vector will be of size 2
+  for(unsigned isccoll=0; isccoll<2;++isccoll) {
+    
     Handle< reco::SuperClusterCollection > EGSuperClusters;
-    found = iEvent.getByLabel(inputTagEGSuperClusters_[isccoll],
-			      EGSuperClusters);
-    if(found )
-      vEGSuperClusters.push_back(EGSuperClusters);
-    else
-      LogError("PFBlockProducer")<<" cannot get selected EG superclusters: "
-				 <<inputTagEGSuperClusters_[isccoll]<<endl;
+    if(useEGSC_){
+      found = iEvent.getByLabel(inputTagEGSuperClusters_[isccoll],
+				EGSuperClusters);      
+      if(!found)
+	LogError("PFBlockProducer")<<" cannot get selected EG superclusters: "
+				   <<inputTagEGSuperClusters_[isccoll]<<endl;
+    }
+    vEGSuperClusters.push_back(EGSuperClusters);
   }
+
   if( usePFatHLT_  ) {
      pfBlockAlgo_.setInput( recTracks, 			   
 			   clustersECAL,

@@ -623,6 +623,18 @@ PFBlockAlgo::link( const reco::PFBlockElement* el1,
       linktest = PFBlock::LINKTEST_RECHIT;
       break;
       
+    }
+  case PFBlockLink::SCandECAL:
+    {
+      PFClusterRef  clusterref = lowEl->clusterRef();
+
+      assert( !clusterref.isNull() );
+      
+      const reco::PFBlockElementSuperCluster * scEl = 
+	dynamic_cast<const reco::PFBlockElementSuperCluster*>(highEl);
+      assert (!scEl->superClusterRef().isNull());
+       dist = testSuperClusterPFCluster(scEl->superClusterRef(),
+				     clusterref);
       break;
     }
   default:
@@ -766,6 +778,25 @@ PFBlockAlgo::testLinkBySuperCluster(const PFClusterRef& ecal1,
   return dist;
 }
 
+double
+PFBlockAlgo::testSuperClusterPFCluster(const SuperClusterRef& ecal1, 
+				       const PFClusterRef& ecal2)  const {
+  
+  //  cout<<"entering testECALAndECAL "<< pfcRefSCMap_.size() << endl;
+  
+  double dist = -1;
+  
+  bool overlap=ClusterClusterMapping::overlap(*ecal1,*ecal2);
+  
+  if(overlap) 	{
+    dist=LinkByRecHit::computeDist( ecal1->position().eta(),
+				    ecal1->position().phi(), 
+				    ecal2->positionREP().Eta(), 
+				    ecal2->positionREP().Phi() );
+    return dist;
+  }
+  return dist;
+}
 
 
 double

@@ -80,6 +80,9 @@ class PFBlockProducer : public edm::EDProducer {
   /// switch on/off V0
   bool useV0_;
 
+  /// switch on/off SuperCluster import for photons
+  bool useEGSC_;
+
   /// Particle Flow at HLT ?
   bool usePFatHLT_;
 

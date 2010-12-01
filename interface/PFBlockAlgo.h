@@ -215,6 +215,9 @@ class PFBlockAlgo {
   double testLinkBySuperCluster(const reco::PFClusterRef & elt1,
 				const reco::PFClusterRef & elt2) const;   
 
+  /// test association between SuperClusters and ECAL
+  double testSuperClusterPFCluster(const reco::SuperClusterRef & sct1,
+				   const reco::PFClusterRef & elt2) const;
 
   /// checks size of the masks with respect to the vectors
   /// they refer to. throws std::length_error if one of the
@@ -305,6 +308,7 @@ class PFBlockAlgo {
 #include "DataFormats/ParticleFlowReco/interface/PFBlockElementBrem.h"
 #include "DataFormats/ParticleFlowReco/interface/PFBlockElementTrack.h"
 #include "DataFormats/ParticleFlowReco/interface/PFBlockElementCluster.h"
+#include "DataFormats/ParticleFlowReco/interface/PFBlockElementSuperCluster.h"
 #include "DataFormats/ParticleFlowReco/interface/PFLayer.h"
 
 template< template<typename> class T >
@@ -384,6 +388,10 @@ PFBlockAlgo::setInput(const T<reco::PFRecTrackCollection>&    trackh,
 	  reco::SuperClusterRef scRef = seedRef->caloCluster().castTo<reco::SuperClusterRef>();
 	  if(scRef.isNonnull())   {	      
 	    superClusters_.push_back(scRef);	      
+	    reco::PFBlockElementSuperCluster * sce =
+	      new reco::PFBlockElementSuperCluster(scRef,
+						   reco::PFBlockElement::SC);
+	    elements_.push_back(sce);
 	  }
 	}
       }
@@ -466,10 +474,17 @@ PFBlockAlgo::setInput(const T<reco::PFRecTrackCollection>&    trackh,
 	// Add only the super clusters not already included 
 	reco::SuperClusterRef scref(*sch,isc);
 	// just temporary for test
-	if(scref->energy()>10.) {
+	if(scref->energy()*sin(scref->position().theta())>50.) {
+	  std::cout << " SC energy " << scref->energy() << " eta " << scref->position().eta() << std::endl;
 	  std::vector<reco::SuperClusterRef>::const_iterator itcheck=find(superClusters_.begin(),superClusters_.end(),scref);
 	  if(itcheck==superClusters_.end())
-	    superClusters_.push_back(scref);
+	    {
+	      superClusters_.push_back(scref);
+	      reco::PFBlockElementSuperCluster * sce =
+		new reco::PFBlockElementSuperCluster(scref,
+						     reco::PFBlockElement::SC);
+	      elements_.push_back(sce);
+	    }
 	}
       }
     }
