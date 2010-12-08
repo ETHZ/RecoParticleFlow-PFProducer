@@ -1,4 +1,4 @@
-<library   name="RecoParticleFlowPFSuperClusterReader" file="PFSuperClusterReader.cc">
+<library   name="RecoParticleFlowPFTestPlugins" file="PFSuperClusterReader.cc, BlockAnalyzer.cc">
   <use   name="DataFormats/Common"/>
   <use   name="DataFormats/EgammaReco"/>
   <use   name="DataFormats/GsfTrackReco"/>
