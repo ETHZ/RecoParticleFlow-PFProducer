@@ -461,7 +461,7 @@ PFBlockAlgo::setInput(const T<reco::PFRecTrackCollection>&    trackh,
   }
 
   /// Loop over the Super Clusters 
-  std::cout << " N super clusters before " << superClusters_.size() << std::endl;
+  //  std::cout << " N super clusters before " << superClusters_.size() << std::endl;
   for(unsigned i=0;i<2;++i) {
     const T<reco::SuperClusterCollection> * sch = (i==0) ? &scbh : &sceh;
     const  Mask * scMask = (i==0) ? &scbMask : & sceMask;
@@ -474,8 +474,8 @@ PFBlockAlgo::setInput(const T<reco::PFRecTrackCollection>&    trackh,
 	// Add only the super clusters not already included 
 	reco::SuperClusterRef scref(*sch,isc);
 	// just temporary for test
-	if(scref->energy()*sin(scref->position().theta())>50.) {
-	  std::cout << " SC energy " << scref->energy() << " eta " << scref->position().eta() << std::endl;
+	if(scref->energy()*sin(scref->position().theta())>20.) {
+	  //	  std::cout << " SC energy " << scref->energy() << " eta " << scref->position().eta() << std::endl;
 	  std::vector<reco::SuperClusterRef>::const_iterator itcheck=find(superClusters_.begin(),superClusters_.end(),scref);
 	  if(itcheck==superClusters_.end())
 	    {
@@ -489,7 +489,7 @@ PFBlockAlgo::setInput(const T<reco::PFRecTrackCollection>&    trackh,
       }
     }
   }
-  std::cout << " Size after " << superClusters_.size() << std::endl;
+  //  std::cout << " Size after " << superClusters_.size() << std::endl;
   // set the vector to the right size so to allow random access
   scpfcRefs_.resize(superClusters_.size());
 
