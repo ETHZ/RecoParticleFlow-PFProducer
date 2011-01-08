@@ -13,11 +13,13 @@
 #include "DataFormats/ParticleFlowReco/interface/PFCluster.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
+#include "RecoParticleFlow/PFProducer/interface/PFElectronExtraEqual.h"
 #include "RecoParticleFlow/PFClusterTools/interface/PFEnergyCalibration.h"
 #include "RecoParticleFlow/PFClusterTools/interface/PFSCEnergyCalibration.h"
 #include "RecoParticleFlow/PFClusterTools/interface/PFEnergyResolution.h"
 #include "RecoParticleFlow/PFClusterTools/interface/PFClusterWidthAlgo.h"
 #include <iomanip>
+#include <algorithm>
 
 using namespace std;
 using namespace reco;
@@ -81,6 +83,7 @@ void PFElectronAlgo::RunPFElectron(const reco::PFBlockRef&  blockRef,
 
   // should be cleaned as often as often as possible
   elCandidate_.clear();
+  electronExtra_.clear();
   allElCandidate_.clear();
   electronConstituents_.clear();
   fifthStepKfTrack_.clear();
@@ -95,6 +98,7 @@ void PFElectronAlgo::RunPFElectron(const reco::PFBlockRef&  blockRef,
   if (blockHasGSF) {
     
     BDToutput_.clear();
+
     lockExtraKf_.clear();
     // For each GSF track is initialized a BDT value = -1
     BDToutput_.assign(associatedToGsf.size(),-1.);
@@ -266,7 +270,6 @@ bool PFElectronAlgo::SetLinks(const reco::PFBlockRef&  blockRef,
 
       if (!localactive[(gsfIs[iEle])]) continue;  
 
-     
       localactive[gsfIs[iEle]] = false;
       bool ClosestEcalWithKf = false;
 
@@ -1572,6 +1575,9 @@ void PFElectronAlgo::SetIDOutputs(const reco::PFBlockRef&  blockRef,
       
       //  ***** Normalization observables ****
       if(RefGSF.isNonnull()) {
+	PFCandidateElectronExtra myExtra(RefGSF) ;
+	myExtra.setGsfTrackPout(GsfEl->Pout());
+	myExtra.setKfTrackRef(RefKF);
 	float Pt_gsf = RefGSF->ptMode();
 	lnPt_gsf = log(Pt_gsf);
 	Eta_gsf = RefGSF->etaMode();
@@ -1604,13 +1610,15 @@ void PFElectronAlgo::SetIDOutputs(const reco::PFBlockRef&  blockRef,
 	EGsfPoutMode       =  Ene_ecalgsf/Eout_gsf;
 	EtotBremPinPoutMode = Ene_ecalbrem /(Ein_gsf - Eout_gsf);
 	DEtaGsfEcalClust  = fabs(deta_gsfecal);
+	myExtra.setSigmaEtaEta(sigmaEtaEta);
+	myExtra.setDeltaEta(DEtaGsfEcalClust);
 	SigmaEtaEta = log(sigmaEtaEta);
 	
 	lateBrem = -1;
 	firstBrem = -1;
 	earlyBrem = -1;
 	if(NumBrem > 0) {
-	  if (LateBrem == true) lateBrem = 1;
+	  if (LateBrem) lateBrem = 1;
 	  else lateBrem = 0;
 	  firstBrem = FirstBrem;
 	  if(FirstBrem < 4) earlyBrem = 1;
@@ -1619,8 +1627,11 @@ void PFElectronAlgo::SetIDOutputs(const reco::PFBlockRef&  blockRef,
 	
 	HOverHE = Ene_hcalgsf/(Ene_hcalgsf + Ene_ecalgsf);
 	HOverPin = Ene_hcalgsf / Ein_gsf;
-	
-	
+	myExtra.setHadEnergy(Ene_hcalgsf);
+	myExtra.setEarlyBrem(earlyBrem);
+	myExtra.setLateBrem(lateBrem);
+	//	std::cout<< " Inserting in extra " << electronExtra_.size() << std::endl;
+
 	// Put cuts and access the BDT output
 	if(DPtOverPt_gsf < -0.2) DPtOverPt_gsf = -0.2;
 	if(DPtOverPt_gsf > 1.) DPtOverPt_gsf = 1.;
@@ -1653,8 +1664,8 @@ void PFElectronAlgo::SetIDOutputs(const reco::PFBlockRef&  blockRef,
 	
 	// add output observables 
 	BDToutput_[cgsf] = mvaValue;
-	
-
+	myExtra.setMVA(mvaValue);
+	electronExtra_.push_back(myExtra);
 
 	// IMPORTANT Additional conditions
 	if(mvaValue > mvaEleCut_) {
@@ -1869,7 +1880,7 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
     double posX=0.;
     double posY=0.;
     double posZ=0.;
-    
+    std::vector<float> bremEnergyVec;
 
     float de_gs = 0., de_me = 0., de_kf = 0.; 
     float m_el=0.00051;
@@ -1892,7 +1903,7 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
     if (RefGSF.isNonnull()) {
       
       has_gsf=true;
-      
+     
       charge= RefGSF->chargeMode();
       nhit_gsf= RefGSF->hitPattern().trackerLayersWithMeasurement();
       
@@ -2026,7 +2037,7 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
 	  RawEene += EE;
 	}
 	
-	// create a photon/electron candadte
+	// create a photon/electron candidate
 	math::XYZTLorentzVector clusterMomentum;
 	math::XYZPoint direction=cl.position()/cl.position().R();
 	clusterMomentum.SetPxPyPzE(EE*direction.x(),
@@ -2111,7 +2122,7 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
 	      double ps1=0;
 	      double ps2=0;
 	      float EE = pfcalib_.energyEm(*clusterRef,ps1EneFromBrem,ps2EneFromBrem,ps1,ps2,applyCrackCorrections_);
-	      
+	      bremEnergyVec.push_back(EE);
 	      // float RawEE  = clusterRef->energy();
 	      float ceta = clusterRef->position().eta();
 	      // float cphi = clusterRef->position().phi();
@@ -2324,6 +2335,23 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
 	if( DebugIDCandidates )
 	  cout << "SetCandidates:: I am before doing candidate " <<endl;
 	
+	//vector with the cluster energies (for the extra)
+	std::vector<float> clusterEnergyVec;
+	clusterEnergyVec.push_back(RawEene);
+	clusterEnergyVec.insert(clusterEnergyVec.end(),bremEnergyVec.begin(),bremEnergyVec.end());
+
+	// add the information in the extra
+	std::vector<reco::PFCandidateElectronExtra>::iterator itextra;
+	PFElectronExtraEqual myExtraEqual(RefGSF);
+	itextra=find_if(electronExtra_.begin(),electronExtra_.end(),myExtraEqual);
+	if(itextra!=electronExtra_.end()) {
+	  itextra->setClusterEnergies(clusterEnergyVec);
+	}
+	else {
+	  if(RawEene>0.) 
+	    std::cout << " There is a big problem with the electron extra, PFElectronAlgo should crash soon " << RawEene << std::endl;
+	}
+
 	reco::PFCandidate::ParticleType particleType 
 	  = reco::PFCandidate::e;
 	reco::PFCandidate temp_Candidate;

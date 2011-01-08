@@ -4,6 +4,7 @@
 #include "DataFormats/ParticleFlowReco/interface/PFBlockFwd.h"
 #include "DataFormats/ParticleFlowReco/interface/PFBlock.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
+#include "DataFormats/ParticleFlowCandidate/interface/PFCandidateElectronExtra.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/Common/interface/Handle.h"
@@ -54,6 +55,9 @@ class PFElectronAlgo {
   //get all electron PFCandidate
   const std::vector<reco::PFCandidate>& getAllElectronCandidates() {return allElCandidate_;};
 
+  //get the electron PFCandidateExtra (for all candidates)
+  const std::vector< reco::PFCandidateElectronExtra>& getElectronExtra() {return electronExtra_;};
+
   // retrieve the list of pre-defined e/g electrons
   void setEGElectronCollection(const reco::GsfElectronCollection & egelectrons);
 
@@ -97,6 +101,7 @@ class PFElectronAlgo {
   std::vector<reco::PFCandidate> allElCandidate_;
   std::map<unsigned int,std::vector<reco::PFCandidate> > electronConstituents_;
   std::vector<double> BDToutput_;
+  std::vector<reco::PFCandidateElectronExtra > electronExtra_;
   std::vector<bool> lockExtraKf_;
   std::vector<bool> GsfTrackSingleEcal_;
   std::vector< std::pair <unsigned int, unsigned int> > fifthStepKfTrack_;
@@ -142,4 +147,6 @@ class PFElectronAlgo {
 
   const std::vector<reco::GsfElectron> * theGsfElectrons_;
 };
+
+
 #endif
