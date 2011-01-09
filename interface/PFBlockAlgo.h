@@ -519,8 +519,9 @@ PFBlockAlgo::setInput(const T<reco::PFRecTrackCollection>&    trackh,
 
       const reco::PFDisplacedTrackerVertexRef dispacedVertexRef( displacedh, i );
 
-      //      std::cout << "Nuclear Interactions Purity " <<  nuclearInteractionsPurity_ << std::endl;
-      //     dispacedVertexRef->displacedVertexRef()->Dump();
+      //      std::cout << "In PFBlockAlgo" << std::endl;
+
+      //      dispacedVertexRef->displacedVertexRef()->Dump();
       //bool bIncludeVertices = true;
 
       
