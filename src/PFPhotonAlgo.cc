@@ -384,8 +384,7 @@ void PFPhotonAlgo::RunPFPhoton(const reco::PFBlockRef&  blockRef,
     
     photonCand.setPs1Energy(ps1TotEne);
     photonCand.setPs2Energy(ps2TotEne);
-    photonCand.setEcalEnergy(photonEnergy_);
-    photonCand.setRawEcalEnergy(photonEnergy_-ps1TotEne-ps2TotEne);
+    photonCand.setEcalEnergy(photonEnergy_-ps1TotEne-ps2TotEne,photonEnergy_);
     //photonCand.setPositionAtECALEntrance(math::XYZPointF(photonMom_.position()));
     //photonCand.addElementInBlock(blockRef,assobrem_index[ibrem]);
     
