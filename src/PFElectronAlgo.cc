@@ -2070,11 +2070,10 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
 	
 	cluster_Candidate.setPs1Energy(ps1);
 	cluster_Candidate.setPs2Energy(ps2);
-	cluster_Candidate.setEcalEnergy(EE);
-	//	      std::cout << " PFElectronAlgo, adding Brem (1) " << EE << std::endl;
 	// The Raw Ecal energy will be the energy of the basic cluster. 
 	// It will be the corrected energy without the preshower
-	cluster_Candidate.setRawEcalEnergy(EE-ps1-ps2);
+	cluster_Candidate.setEcalEnergy(EE-ps1-ps2,EE);
+	//	      std::cout << " PFElectronAlgo, adding Brem (1) " << EE << std::endl;
 	cluster_Candidate.setPositionAtECALEntrance(math::XYZPointF(cl.position()));
 	cluster_Candidate.addElementInBlock(blockRef,assogsf_index[ielegsf]);
 	// store the photon candidate
@@ -2180,11 +2179,10 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
 	      
 	      photon_Candidate.setPs1Energy(ps1);
 	      photon_Candidate.setPs2Energy(ps2);
-	      photon_Candidate.setEcalEnergy(EE);
-	      //	      std::cout << " PFElectronAlgo, adding Brem " << EE << std::endl;
 	      // yes, EE, we want the raw ecal energy of the daugther to have the same definition
 	      // as the GSF cluster
-	      photon_Candidate.setRawEcalEnergy(EE-ps1-ps2);
+	      photon_Candidate.setEcalEnergy(EE-ps1-ps2,EE);
+	      //	      std::cout << " PFElectronAlgo, adding Brem " << EE << std::endl;
 	      photon_Candidate.setPositionAtECALEntrance(math::XYZPointF(clusterRef->position()));
 	      photon_Candidate.addElementInBlock(blockRef,assobrem_index[ibrem]);
 
@@ -2392,10 +2390,9 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
 	reco::PFCandidate temp_Candidate;
 	temp_Candidate = PFCandidate(charge,newmomentum,particleType);
 	temp_Candidate.set_mva_e_pi(BDToutput_[cgsf]);
-	temp_Candidate.setEcalEnergy(Eene);
-	temp_Candidate.setRawEcalEnergy(RawEene);
+	temp_Candidate.setEcalEnergy(RawEene,Eene);
 	// Note the Hcal energy is set but the element is never locked 
-	temp_Candidate.setHcalEnergy(Hene);  
+	temp_Candidate.setHcalEnergy(Hene,Hene);  
 	temp_Candidate.setPs1Energy(ps1TotEne);
 	temp_Candidate.setPs2Energy(ps2TotEne);
 	temp_Candidate.setTrackRef(RefKF);   
@@ -2403,7 +2400,7 @@ void PFElectronAlgo::SetCandidates(const reco::PFBlockRef&  blockRef,
 	temp_Candidate.setGsfTrackRef(RefGSF);
 	temp_Candidate.setPositionAtECALEntrance(posGsfEcalEntrance);
 	// Add Vertex
-	temp_Candidate.setVertex(RefGSF->vertex());
+	temp_Candidate.setVertexSource(PFCandidate::kGSFVertex);
 
 
 	if( DebugIDCandidates ) 
