@@ -9,12 +9,11 @@
 #include "DataFormats/Common/interface/OrphanHandle.h"
 #include "DataFormats/ParticleFlowReco/interface/PFBlockElementGsfTrack.h"
 #include "DataFormats/ParticleFlowReco/interface/PFBlockElementTrack.h"
-#include "DataFormats/VertexReco/interface/Vertex.h"
 #include "TMVA/Reader.h"
 #include <iostream>
 
 
-class PFEnergyCalibration;
+class PFSCEnergyCalibration;
 
 namespace reco {
   class PFCandidate;
@@ -25,13 +24,10 @@ class PFPhotonAlgo {
  public:
   
   //constructor
-  PFPhotonAlgo(std::string mvaweightfile,  
-	       double mvaConvCut, 
-	       const reco::Vertex& primary,
-	       const boost::shared_ptr<PFEnergyCalibration>& thePFEnergyCalibration); 
+  PFPhotonAlgo(); 
 
   //destructor
-  ~PFPhotonAlgo(){delete tmvaReader_;};
+  ~PFPhotonAlgo(){};
   
   //check candidate validity
   bool isPhotonValidCandidate(const reco::PFBlockRef&  blockRef,
@@ -65,27 +61,13 @@ private:
 						  ...............  0: Say nothing at all
 						  ...............  1: Print summary about found PhotonCadidates only
 						  ...............  2: Chatty mode
-                                              */ 
-  //FOR SINGLE LEG MVA:					      
-  double MVACUT;
-  reco::Vertex       primaryVertex_;
-  TMVA::Reader *tmvaReader_;
-  boost::shared_ptr<PFEnergyCalibration> thePFEnergyCalibration_; 
-
-  float nlost, nlayers;
-  float chi2, STIP, del_phi,HoverPt, EoverPt, track_pt;
-  double mvaValue;
-
+					       */
+  
   void RunPFPhoton(const reco::PFBlockRef&  blockRef,
 		   std::vector< bool >& active,
 		   std::auto_ptr< reco::PFCandidateCollection > &pfPhotonCandidates);
-
-  bool EvaluateSingleLegMVA(const reco::PFBlockRef& blockref, 
-			    const reco::Vertex& primaryvtx, 
-			    unsigned int track_index);
   
 };
-
 
 
 #endif
