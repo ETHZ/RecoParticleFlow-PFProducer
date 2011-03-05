@@ -122,25 +122,13 @@ PFProducer::PFProducer(const edm::ParameterSet& iConfig) {
 
   bool applyCrackCorrectionsForElectrons
     = iConfig.getParameter<bool>("pf_electronID_crackCorrection");
-  
+
   string path_mvaWeightFileEleID;
   if(usePFElectrons_)
     {
       path_mvaWeightFileEleID = edm::FileInPath ( mvaWeightFileEleID.c_str() ).fullPath();
-     }
-
-  //PFPhoton Configurtion
-  string mvaWeightFileConvID
-    =iConfig.getParameter<string>("pf_convID_mvaWeightFile");
-  
-  double mvaConvCut
-    = iConfig.getParameter<double>("pf_conv_mvaCut");
-  string path_mvaWeightFileConvID;
-  if(usePFPhotons_)
-    {
-      path_mvaWeightFileConvID = edm::FileInPath ( mvaWeightFileConvID.c_str() ).fullPath();      
     }
-  
+
 
   //Secondary tracks and displaced vertices parameters
 
@@ -211,12 +199,8 @@ PFProducer::PFProducer(const edm::ParameterSet& iConfig) {
   //  pfAlgo_->setPFConversionParameters(usePFConversions);
 
   // PFPhotons: 
-  pfAlgo_->setPFPhotonParameters(usePFPhotons_,
-				 path_mvaWeightFileConvID,
-				 mvaConvCut,
-				 calibration);
-
-
+  pfAlgo_->setPFPhotonParameters(usePFPhotons_);
+  
   //Secondary tracks and displaced vertices parameters
   
   pfAlgo_->setDisplacedVerticesParameters(rejectTracks_Bad,
@@ -226,6 +210,10 @@ PFProducer::PFProducer(const edm::ParameterSet& iConfig) {
 	 				  usePFDecays,
 					  dptRel_DispVtx);
   
+
+
+
+
   if (usePFNuclearInteractions)
     pfAlgo_->setCandConnectorParameters( iCfgCandConnector );
 
