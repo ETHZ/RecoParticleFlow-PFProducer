@@ -191,15 +191,15 @@ PFBlockProducer::produce(Event& iEvent,
   Handle< reco::MuonCollection > recMuons;
 
   // LogDebug("PFBlockProducer")<<"get reco muons"<<endl;
-  if(!usePFatHLT_) {
-    found = iEvent.getByLabel(inputTagRecMuons_, recMuons);
+  //if(!usePFatHLT_) {
+  found = iEvent.getByLabel(inputTagRecMuons_, recMuons);
   
     //if(!found )
     //  LogError("PFBlockProducer")<<" cannot get recmuons: "
     //			 <<inputTagRecMuons_<<endl;
 
   // get PFNuclearInteractions
-  }
+  //}
   //---------- Gouzevitch
   //  Handle< reco::PFNuclearInteractionCollection > pfNuclears; 
   Handle< reco::PFDisplacedTrackerVertexCollection > pfNuclears; 
@@ -281,7 +281,8 @@ PFBlockProducer::produce(Event& iEvent,
   Handle< reco::PFRecTrackCollection > nuclearRecTracks;
 
   if( usePFatHLT_  ) {
-     pfBlockAlgo_.setInput( recTracks, 			   
+     pfBlockAlgo_.setInput( recTracks, 		
+			    recMuons,
 			   clustersECAL,
 			   clustersHCAL,
 			   clustersHFEM,

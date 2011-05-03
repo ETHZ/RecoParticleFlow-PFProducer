@@ -1021,14 +1021,12 @@ PFBlockAlgo::goodPtResolution( const reco::TrackRef& trackref) {
     Algo = 4;
     break;
   default:
-    Algo = 5;
+    Algo = useIterTracking_ ? 5 : 0;
     break;
   }
 
   // Protection against 0 momentum tracks
   if ( P < 0.05 ) return false;
-
-  if(useIterTracking_){
 
   // Temporary : Reject all tracking iteration beyond 5th step. 
   if ( Algo > 4 ) return false;
@@ -1060,7 +1058,6 @@ PFBlockAlgo::goodPtResolution( const reco::TrackRef& trackref) {
     return false;
   }
 
-  }
   /*
   std::cout << "Track Accepted : ";
   std::cout << ", P = " << P 
