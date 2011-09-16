@@ -83,11 +83,6 @@ class PFBlockProducer : public edm::EDProducer {
   /// Particle Flow at HLT ?
   bool usePFatHLT_;
 
-  // Glowinski & Gouzevitch
-  // Use the optimized KDTree Track/Ecal linker?
-  bool useKDTreeTrackEcalLinker_;
-  // !Glowinski & Gouzevitch
-
   /// Particle flow block algorithm 
   PFBlockAlgo            pfBlockAlgo_;
 
