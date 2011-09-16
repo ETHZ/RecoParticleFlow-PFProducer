@@ -2423,9 +2423,6 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
       // Check if already used
       if( !active[iEcal] ) continue;
 
-      // Check the distance (one HCALPlusECAL tower, roughly)
-      if ( dist > 0.15 ) continue;
-
       //COLINFEB16 
       // what could be done is to
       // - link by rechit.

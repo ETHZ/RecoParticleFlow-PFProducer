@@ -375,7 +375,7 @@ PFBlockAlgo::link( const reco::PFBlockElement* el1,
 	  double xECAL  = ecalref->position().X();
 	  double yECAL  = ecalref->position().Y();
 
-	  dist = LinkByRecHit::computeDist(xECAL/1000.,yECAL/1000.,xPS/1000.  ,yPS/1000);
+	  dist = LinkByRecHit::computeDist(xECAL/1000.,yECAL/1000.,xPS/1000.  ,yPS/1000, false);
 	}
 
       } else { //Old algorithm
@@ -520,8 +520,8 @@ PFBlockAlgo::link( const reco::PFBlockElement* el1,
       assert( !ecalref.isNull() );
       assert( !hcalref.isNull() );
       // PJ - 14-May-09 : A link by rechit is needed here !
-      /// dist = testECALAndHCAL( *ecalref, *hcalref );
-      dist = -1.;
+      dist = testECALAndHCAL( *ecalref, *hcalref );
+      // dist = -1.;
       //     linktest = PFBlock::LINKTEST_RECHIT;
       break;
     }
@@ -861,13 +861,13 @@ PFBlockAlgo::testECALAndHCAL(const PFCluster& ecal,
   
   //   cout<<"entering testECALAndHCAL"<<endl;
   
-  /*
-  double dist = 
-    computeDist( ecal.positionREP().Eta(),
-		 ecal.positionREP().Phi(), 
-		 hcal.positionREP().Eta(), 
-		 hcal.positionREP().Phi() );
-  */
+  double dist = fabs(ecal.positionREP().Eta()) > 2.5 ?
+    LinkByRecHit::computeDist( ecal.positionREP().Eta(),
+			       ecal.positionREP().Phi(), 
+			       hcal.positionREP().Eta(), 
+			       hcal.positionREP().Phi() )
+    : 
+    -1.;
 
 #ifdef PFLOW_DEBUG
   if(debug_) cout<<"testECALAndHCAL "<< dist <<" "<<endl;
@@ -879,6 +879,8 @@ PFBlockAlgo::testECALAndHCAL(const PFCluster& ecal,
   }
 #endif
 
+  if ( dist < 0.2 ) return dist; 
+ 
   // Need to implement a link by RecHit
   return -1.;
 }
