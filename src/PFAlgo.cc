@@ -152,10 +152,6 @@ void
 PFAlgo::setPFPhotonParameters(bool usePFPhotons,  
 			      std::string mvaWeightFileConvID, 
 			      double mvaConvCut,
-			      bool useReg,
-			      std::string mvaWeightFilePFClusCorr, 
-			      std::string mvaWeightFilePFPhoCorr, 
-			      std::string X0_Map,
 			      const boost::shared_ptr<PFEnergyCalibration>& thePFEnergyCalibration,
 			      double sumPtTrackIsoForPhoton,
 			      double sumPtTrackIsoSlopeForPhoton)
@@ -191,18 +187,14 @@ PFAlgo::setPFPhotonParameters(bool usePFPhotons,
     throw invalid_argument( err );  
   }  
    
-  
+   
   pfpho_ = new PFPhotonAlgo(mvaWeightFileConvID, 
 			    mvaConvCut, 
-			    useReg,
-			    mvaWeightFilePFClusCorr, 
-			    mvaWeightFilePFPhoCorr, 
-			    X0_Map,  
 			    *pv,
 			    thePFEnergyCalibration,
                             sumPtTrackIsoForPhoton,
                             sumPtTrackIsoSlopeForPhoton
-			    );
+);
   return;
 }
 
@@ -1088,15 +1080,7 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
 	  (*pfCandidates_)[tmpe].setPs1Energy( ps1Ene[0] );
 	  (*pfCandidates_)[tmpe].setPs2Energy( ps2Ene[0] );
 	  (*pfCandidates_)[tmpe].addElementInBlock( blockref, index );
-	  // Check that there is at least one track
-	  if(assTracks.size()) {
-	    (*pfCandidates_)[tmpe].addElementInBlock( blockref, assTracks.begin()->second );
-	    
-	    // Assign the position of the track at the ECAL entrance
-	    const math::XYZPointF& chargedPosition = 
-	      dynamic_cast<const reco::PFBlockElementTrack*>(&elements[assTracks.begin()->second])->positionAtECALEntrance();
-	    (*pfCandidates_)[tmpe].setPositionAtECALEntrance(chargedPosition);
-	  }
+	  (*pfCandidates_)[tmpe].addElementInBlock( blockref, assTracks.begin()->second );
 	  break;
 	}
 
@@ -2313,11 +2297,6 @@ void PFAlgo::processBlock( const reco::PFBlockRef& blockref,
 	for ( unsigned ich=0; ich<chargedHadronsInBlock.size(); ++ich) { 
 	  unsigned iTrack = chargedHadronsInBlock[ich];
 	  (*pfCandidates_)[tmpi].addElementInBlock( blockref, iTrack );
-	  // Assign the position of the track at the ECAL entrance
-	  const math::XYZPointF& chargedPosition = 
-	    dynamic_cast<const reco::PFBlockElementTrack*>(&elements[iTrack])->positionAtECALEntrance();
-	  (*pfCandidates_)[tmpi].setPositionAtECALEntrance(chargedPosition);
-
 	  std::pair<II,II> myEcals = associatedEcals.equal_range(iTrack);
 	  for (II ii=myEcals.first; ii!=myEcals.second; ++ii ) { 
 	    unsigned iEcal = ii->second.second;
