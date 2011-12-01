@@ -105,7 +105,6 @@ particleFlowTmp = cms.EDProducer("PFProducer",
 
     # Use PF muon momentum assigment instead of default reco muon one
     usePFMuonMomAssign = cms.bool(False),
-    useBestMuonTrack   = cms.bool(False),                        
 
     # Treatment of potential fake tracks
     # Number of sigmas for fake track detection
