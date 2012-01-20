@@ -426,8 +426,8 @@ PFProducer::beginRun(edm::Run & run,
     es.get<GBRWrapperRcd>().get("PFGlobalCorrection",readerPFGC);
     es.get<GBRWrapperRcd>().get("PFResolution",readerPFRes);
     ReaderLC_ = readerPFLC.product();//&readerPFLC->GetForest();
-    ReaderGC_ = readerPFLC.product();//&readerPFGC->GetForest();
-    ReaderRes_ = readerPFLC.product();//&readerPFRes->GetForest();
+    ReaderGC_ = readerPFGC.product();//&readerPFGC->GetForest();
+    ReaderRes_ = readerPFRes.product();//&readerPFRes->GetForest();
     LogDebug("PFProducer")<<"setting regressions from DB "<<endl;
   } 
 
