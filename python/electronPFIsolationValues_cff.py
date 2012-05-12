@@ -93,21 +93,22 @@ elPFIsoValueGamma03NoPFId       =  elPFIsoValueGamma03PFId.clone()
 elPFIsoValueNeutral03NoPFId     =  elPFIsoValueNeutral03PFId.clone()       
 elPFIsoValuePU03NoPFId          =  elPFIsoValuePU03PFId.clone()            
 # Customization - These are the new recommendations, while the standard remains as in 52X used for RECO
-elPFIsoValueCharged03NoPFId.deposits[0].vetos = cms.vstring('EcalBarrel:ConeVeto(0.015)','EcalEndcaps:ConeVeto(0.015)')
-elPFIsoValueChargedAll03NoPFId.deposits[0].vetos = cms.vstring('EcalBarrel:ConeVeto(0.015)','EcalEndcaps:ConeVeto(0.015)')
-elPFIsoValuePU03NoPFId.deposits[0].vetos = cms.vstring('EcalBarrel:ConeVeto(0.015)','EcalEndcaps:ConeVeto(0.015)') 
-elPFIsoValueGamma03NoPFId.deposits[0].vetos = cms.vstring('EcalBarrel:RectangularEtaPhiVeto(-0.02,0.02,-0.5,0.5)','EcalEndcaps:ConeVeto(0.08)')
-
+elPFIsoValueCharged03NoPFId.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)')
+elPFIsoValueChargedAll03NoPFId.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)')
+elPFIsoValuePU03NoPFId.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)') 
+elPFIsoValueGamma03NoPFId.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.08)')
+elPFIsoValueNeutral03NoPFId.deposits[0].vetos = cms.vstring()
 
 elPFIsoValueCharged04NoPFId     =  elPFIsoValueCharged04PFId.clone()       
 elPFIsoValueChargedAll04NoPFId  =  elPFIsoValueChargedAll04PFId.clone()    
 elPFIsoValueGamma04NoPFId       =  elPFIsoValueGamma04PFId.clone()         
 elPFIsoValueNeutral04NoPFId     =  elPFIsoValueNeutral04PFId.clone()       
 elPFIsoValuePU04NoPFId          =  elPFIsoValuePU04PFId.clone()            
-elPFIsoValueCharged04NoPFId.deposits[0].vetos = cms.vstring('EcalBarrel:ConeVeto(0.015)','EcalEndcaps:ConeVeto(0.015)')
-elPFIsoValueChargedAll04NoPFId.deposits[0].vetos = cms.vstring('EcalBarrel:ConeVeto(0.015)','EcalEndcaps:ConeVeto(0.015)')
-elPFIsoValuePU04NoPFId.deposits[0].vetos = cms.vstring('EcalBarrel:ConeVeto(0.015)','EcalEndcaps:ConeVeto(0.015)') 
-elPFIsoValueGamma04NoPFId.deposits[0].vetos = cms.vstring('EcalBarrel:RectangularEtaPhiVeto(-0.02,0.02,-0.5,0.5)','EcalEndcaps:ConeVeto(0.08)')
+elPFIsoValueCharged04NoPFId.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)')
+elPFIsoValueChargedAll04NoPFId.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)')
+elPFIsoValuePU04NoPFId.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.015)') 
+elPFIsoValueGamma04NoPFId.deposits[0].vetos = cms.vstring('EcalEndcaps:ConeVeto(0.08)')
+elPFIsoValueNeutral04NoPFId.deposits[0].vetos = cms.vstring()
 
 electronPFIsolationValuesSequence = (
     elPFIsoValueCharged03PFId+
