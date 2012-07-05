@@ -20,7 +20,6 @@ phPFIsoDepositGamma= cms.EDProducer("CandIsoDepositProducer",
                                         inputCandView = cms.InputTag("pfAllPhotons"),
                                         DR_Veto = cms.double(1e-05),
                                         SCMatch_Veto = cms.bool(True),
-                                        MissHitSCMatch_Veto = cms.bool(False),
                                         DepositLabel = cms.untracked.string('')
                                         )
                             )
