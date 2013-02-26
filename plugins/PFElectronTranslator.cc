@@ -57,8 +57,6 @@ PFElectronTranslator::PFElectronTranslator(const edm::ParameterSet & iConfig) {
 
 PFElectronTranslator::~PFElectronTranslator() {}
 
-void PFElectronTranslator::beginRun(edm::Run& run,const edm::EventSetup & es) {}
-
 void PFElectronTranslator::produce(edm::Event& iEvent,  
 				    const edm::EventSetup& iSetup) { 
   
