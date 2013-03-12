@@ -631,6 +631,12 @@ PFMuonAlgo::printMuonProperties(const reco::MuonRef& muonRef){
 
 
 std::vector<reco::Muon::MuonTrackTypePair> PFMuonAlgo::goodMuonTracks(const reco::MuonRef& muon,bool includeSA) {
+  return muonTracks(muon,includeSA,maxDPtOPt_);
+}
+
+
+
+std::vector<reco::Muon::MuonTrackTypePair> PFMuonAlgo::muonTracks(const reco::MuonRef& muon,bool includeSA,double dpt) {
 
 
 
@@ -638,16 +644,16 @@ std::vector<reco::Muon::MuonTrackTypePair> PFMuonAlgo::goodMuonTracks(const reco
 
   
   if(muon->globalTrack().isNonnull()) 
-    if(muon->globalTrack()->ptError()/muon->globalTrack()->pt()<maxDPtOPt_)
+    if(muon->globalTrack()->ptError()/muon->globalTrack()->pt()<dpt)
       out.push_back(std::make_pair(muon->globalTrack(),reco::Muon::CombinedTrack));
 
   if(muon->innerTrack().isNonnull()) 
-    if(muon->innerTrack()->ptError()/muon->innerTrack()->pt()<maxDPtOPt_)//Here Loose!@
+    if(muon->innerTrack()->ptError()/muon->innerTrack()->pt()<dpt)//Here Loose!@
       out.push_back(std::make_pair(muon->innerTrack(),reco::Muon::InnerTrack));
 
   bool pickyExists=false; 
   if(muon->pickyTrack().isNonnull()) {
-    if(muon->pickyTrack()->ptError()/muon->pickyTrack()->pt()<maxDPtOPt_) 
+    if(muon->pickyTrack()->ptError()/muon->pickyTrack()->pt()<dpt) 
       out.push_back(std::make_pair(muon->pickyTrack(),reco::Muon::Picky));
     pickyExists=true;
   }
@@ -656,16 +662,17 @@ std::vector<reco::Muon::MuonTrackTypePair> PFMuonAlgo::goodMuonTracks(const reco
   //IT is kind of crap because if mu system is displaced it can make a change
   //So allow TPFMS if there is no picky or the error of tpfms is better than picky
   if(muon->tpfmsTrack().isNonnull() && ((pickyExists && muon->tpfmsTrack()->ptError()/muon->tpfmsTrack()->pt()<muon->pickyTrack()->ptError()/muon->pickyTrack()->pt())||(!pickyExists)) ) 
-    if(muon->tpfmsTrack()->ptError()/muon->tpfmsTrack()->pt()<maxDPtOPt_)
+    if(muon->tpfmsTrack()->ptError()/muon->tpfmsTrack()->pt()<dpt)
       out.push_back(std::make_pair(muon->tpfmsTrack(),reco::Muon::TPFMS));
 
   if(includeSA && muon->outerTrack().isNonnull())
-    if(muon->outerTrack()->ptError()/muon->outerTrack()->pt()<maxDPtOPt_)
+    if(muon->outerTrack()->ptError()/muon->outerTrack()->pt()<dpt)
       out.push_back(std::make_pair(muon->outerTrack(),reco::Muon::OuterTrack));
 
   return out;
 
 }
+
 
 
 
@@ -695,7 +702,16 @@ bool PFMuonAlgo::reconstructMuon(reco::PFCandidate& candidate, const reco::MuonR
       return false;
 
     //get the valid tracks(without standalone except we allow loose muons)
+    //MIKE: Here we need to be careful. If we have a muon inside a dense 
+    //jet environment often the track is badly measured. In this case 
+    //we should not apply Dpt/Pt<1
+ 
     std::vector<reco::Muon::MuonTrackTypePair> validTracks = goodMuonTracks(muon);
+    if (!allowLoose)
+      validTracks = goodMuonTracks(muon);
+    else
+      validTracks = muonTracks(muon);
+
     if( validTracks.size() ==0)
       return false;
 
@@ -711,18 +727,6 @@ bool PFMuonAlgo::reconstructMuon(reco::PFCandidate& candidate, const reco::MuonR
 
     MuonTrackTypePair trackPairWithSmallestError = getTrackWithSmallestError(validTracks);
     TrackRef trackWithSmallestError = trackPairWithSmallestError.first;
-    
-    //If TuneP gives us track with DPtOPt>1 change track
-    //    if(bestTrack->ptError()/bestTrack->pt()>maxDPtOPt_) {
-    //      bestTrack = trackWithSmallestError;
-    //      trackType = trackPairWithSmallestError.second;
-    //    }
-    
-
-    //FOR TIGHT AND LOOSE MUONS:If the best track is tracker track check the quality and 
-    //if the quality is bad revert to the track with the smallest
-    //relative error. On the other hand if tuneP says that the correct track is not the tracker
-    //check if one other track is much  better measures
     
     if( trackType == reco::Muon::InnerTrack && 
 	(!bestTrack->quality(trackQuality_) ||
@@ -880,7 +884,9 @@ void PFMuonAlgo::postClean(reco::PFCandidateCollection*  cands) {
   maskedIndices_.clear();
 
   //Estimate MET and SumET
+
   estimateEventQuantities(cands);
+
   
   std::vector<int> muons;
   std::vector<int> cosmics;
@@ -890,8 +896,10 @@ void PFMuonAlgo::postClean(reco::PFCandidateCollection*  cands) {
       muons.push_back(i);
 
   //Then sort the muon indicess by decsending pt
+
   IndexPtComparator comparator(cands);
   std::sort(muons.begin(),muons.end(),comparator);
+
 
   //first kill cosmics
   double METXCosmics=0;
@@ -928,8 +936,10 @@ void PFMuonAlgo::postClean(reco::PFCandidateCollection*  cands) {
   }
 
 
+
   //OK Now do the hard job ->remove the candidates that were cleaned 
   removeDeadCandidates(cands,maskedIndices_);
+
 
 
 
@@ -1247,8 +1257,10 @@ bool PFMuonAlgo::cleanPunchThroughAndFakes(reco::PFCandidate&pfc,reco::PFCandida
 void  PFMuonAlgo::removeDeadCandidates(reco::PFCandidateCollection* obj, const std::vector<unsigned int>& indices)
 {
   size_t N = indices.size();
-  for (size_t i = 0 ; i < N ; ++i)
-    obj->at(indices.at(i)) = obj->at(N-i-1);
+  size_t collSize = obj->size();
 
-  obj->resize(N - indices.size());
+  for (size_t i = 0 ; i < N ; ++i)
+    obj->at(indices.at(i)) = obj->at(collSize-i-1);
+
+  obj->resize(collSize - indices.size());
 }
