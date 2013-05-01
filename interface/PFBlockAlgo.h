@@ -35,6 +35,11 @@
 #include "RecoParticleFlow/PFProducer/interface/KDTreeLinkerTrackHcal.h" 
 #include "RecoParticleFlow/PFProducer/interface/KDTreeLinkerPSEcal.h" 
 // !Glowinski & Gouzevitch
+#include "RecoParticleFlow/PFProducer/interface/KDTreeLinkerTrackEcalAOD.h" 
+#include "RecoParticleFlow/PFProducer/interface/KDTreeLinkerTrackHcalAOD.h" 
+#include "RecoParticleFlow/PFProducer/interface/KDTreeLinkerPSEcalAOD.h" 
+
+
 
 // #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 
@@ -58,6 +63,9 @@
 #include "RecoParticleFlow/PFClusterTools/interface/ClusterClusterMapping.h"
 
 #include "RecoParticleFlow/PFProducer/interface/PFBlockLink.h"
+
+// needed for cluster/track linking when using DetId's(AA)
+#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
 
 #include <map>
 
@@ -195,6 +203,9 @@ class PFBlockAlgo {
   
   void setHOTag(bool ho) { useHO_ = ho;}
 
+  // set the geometry for linking using DetId'd (AA)
+  void setCaloGeometry(const CaloGeometry* caloGeo) { caloGeometryForLinking_ = caloGeo; }
+
  private:
   
   /// recursive procedure which adds elements from 
@@ -306,10 +317,19 @@ class PFBlockAlgo {
 
   // Glowinski & Gouzevitch
   bool useKDTreeTrackEcalLinker_;
+
+  // !Glowinski & Gouzevitch
   KDTreeLinkerTrackEcal TELinker_;
   KDTreeLinkerTrackHcal THLinker_;
   KDTreeLinkerPSEcal	PSELinker_;
-  // !Glowinski & Gouzevitch
+
+  // Add versions for running on AOD (AA)
+  KDTreeLinkerTrackEcalAOD TELinkerAOD_;
+  KDTreeLinkerTrackHcalAOD THLinkerAOD_;
+  KDTreeLinkerPSEcalAOD	PSELinkerAOD_;
+
+
+
 
   static const Mask                      dummyMask_;
 
@@ -359,7 +379,15 @@ class PFBlockAlgo {
   // Create links between tracks or HCAL clusters, and HO clusters
   bool useHO_;
 
+  /// The caloGeometryForLinking_ pointer is set in the PFBlockProducer 
+  /// A check in PFBlockAlgo is performed:
+  ///  - If caloGeometryForLinking_==0, the cluster/track linking is performed 
+  ///    using calorimeter cell coordinates stored in the PFRecHits
+  ///  - Else, methods using cell geometry and detId's are deployed (used for re-reco from AOD)
+  const CaloGeometry* caloGeometryForLinking_;
+
 };
+
 
 #include "DataFormats/ParticleFlowReco/interface/PFBlockElementGsfTrack.h"
 #include "DataFormats/ParticleFlowReco/interface/PFBlockElementBrem.h"
@@ -1090,9 +1118,10 @@ PFBlockAlgo::setInput(const T<reco::PFRecTrackCollection>&    trackh,
     case reco::PFBlockElement::TRACK:
       if (useKDTreeTrackEcalLinker_) {
 	if ( (*it)->trackRefPF()->extrapolatedPoint( reco::PFTrajectoryPoint::ECALShowerMax ).isValid() )
-	  TELinker_.insertTargetElt(*it);
+	  caloGeometryForLinking_? TELinkerAOD_.insertTargetElt(*it) : TELinker_.insertTargetElt(*it);
+	
 	if ( (*it)->trackRefPF()->extrapolatedPoint( reco::PFTrajectoryPoint::HCALEntrance ).isValid() )
-	  THLinker_.insertTargetElt(*it);
+	  caloGeometryForLinking_? THLinkerAOD_.insertTargetElt(*it) : THLinker_.insertTargetElt(*it);
       }
       
       break;
@@ -1100,25 +1129,31 @@ PFBlockAlgo::setInput(const T<reco::PFRecTrackCollection>&    trackh,
     case reco::PFBlockElement::PS1:
     case reco::PFBlockElement::PS2:
       if (useKDTreeTrackEcalLinker_)
-	PSELinker_.insertTargetElt(*it);
+			caloGeometryForLinking_? PSELinkerAOD_.insertTargetElt(*it) : PSELinker_.insertTargetElt(*it);
       break;
 
     case reco::PFBlockElement::HCAL:
       if (useKDTreeTrackEcalLinker_)
-	THLinker_.insertFieldClusterElt(*it);
+			caloGeometryForLinking_? THLinkerAOD_.insertFieldClusterElt(*it) : THLinker_.insertFieldClusterElt(*it);
       break;
 
     case reco::PFBlockElement::HO: 
       if (useHO_ && useKDTreeTrackEcalLinker_) {
-	// THLinker_.insertFieldClusterElt(*it);
+	// caloGeometryForLinking_? THLinkerAOD_.insertFieldClusterElt(*it) : THLinker_.insertFieldClusterElt(*it);
       }
       break;
 
 	
     case reco::PFBlockElement::ECAL:
       if (useKDTreeTrackEcalLinker_) {
-	TELinker_.insertFieldClusterElt(*it);
-	PSELinker_.insertFieldClusterElt(*it);
+			if (caloGeometryForLinking_) {
+				TELinkerAOD_.insertFieldClusterElt(*it);
+				PSELinkerAOD_.insertFieldClusterElt(*it);
+			}
+			else {
+				TELinker_.insertFieldClusterElt(*it);
+				PSELinker_.insertFieldClusterElt(*it);
+			}
       }
       break;
 

@@ -39,6 +39,7 @@ class PFBlockProducer : public edm::EDProducer {
   ~PFBlockProducer();
   
   virtual void produce(edm::Event&, const edm::EventSetup&) override;
+  void beginRun(const edm::Run & run, const edm::EventSetup & es) override;
 
  private:
 
@@ -90,6 +91,10 @@ class PFBlockProducer : public edm::EDProducer {
 
   /// Particle flow block algorithm 
   PFBlockAlgo            pfBlockAlgo_;
+
+  /// Switch to use methods suitable for re-reco from AOD
+  bool runOnAOD_;
+
 
 };
 

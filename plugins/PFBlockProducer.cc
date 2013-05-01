@@ -26,6 +26,11 @@
 
 #include "FWCore/ParameterSet/interface/FileInPath.h"
 
+// needed for cluster/track linking when using DetId's(AA)
+#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
+#include "Geometry/Records/interface/CaloGeometryRecord.h"
+
+
 #include <set>
 
 using namespace std;
@@ -101,6 +106,8 @@ PFBlockProducer::PFBlockProducer(const edm::ParameterSet& iConfig) {
 
   useHO_=  iConfig.getParameter<bool>("useHO");
 
+  runOnAOD_ = iConfig.getParameter<bool>("runOnAOD");
+
   produces<reco::PFBlockCollection>();
   
   // Glowinski & Gouzevitch
@@ -174,16 +181,38 @@ PFBlockProducer::~PFBlockProducer() { }
 
 
 
+//void 
+//PFBlockProducer::beginJob() { }
+
+void 
+PFBlockProducer::beginRun(const edm::Run & run, 
+			  const edm::EventSetup & es) { 
+
+  // CaloGeometry is passed to PFBlockAlgo and used
+  // for cluster/track linking using detId's 
+  // when running on AOD files (AA)
+  // PFBlockAlgo checks if the pointer to CaloGeometry
+  // was set, or it is 0.
+  if (runOnAOD_) {
+	edm::ESHandle<CaloGeometry> caloGeo;
+	es.get<CaloGeometryRecord>().get(caloGeo);
+	pfBlockAlgo_.setCaloGeometry(caloGeo.product());
+  }
+  else {
+	pfBlockAlgo_.setCaloGeometry(0);
+  }
+
+}
+
+
 void 
 PFBlockProducer::produce(Event& iEvent, 
 			 const EventSetup& iSetup) {
   
   LogDebug("PFBlockProducer")<<"START event: "<<iEvent.id().event()
 			     <<" in run "<<iEvent.id().run()<<endl;
-  
-  
+
   // get rectracks
-  
   Handle< reco::PFRecTrackCollection > recTracks;
   
   // LogDebug("PFBlockProducer")<<"get reco tracks"<<endl;

@@ -1,7 +1,7 @@
 #ifndef KDTreeLinkerBase_h
 #define KDTreeLinkerBase_h
 
-#include "DataFormats/ParticleFlowReco/interface/PFRecHitFraction.h"
+//#include "DataFormats/ParticleFlowReco/interface/PFRecHitFraction.h" // not needed? (AA)
 #include "DataFormats/ParticleFlowReco/interface/PFBlockElement.h"
 
 #include <vector>
